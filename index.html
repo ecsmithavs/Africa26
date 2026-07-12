@@ -90,8 +90,7 @@ html.snap header{scroll-snap-align:start} /* top of page is a valid resting poin
 .datebox{width:52px;height:52px;border-radius:13px;background:var(--card2);border:1px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto}
 .datebox .dn{font-family:'Fraunces',serif;font-weight:600;font-size:1.35rem;line-height:1;color:var(--espresso)}
 .datebox .dm{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700}
-.day-top .dow{font-weight:600;font-size:.95rem}
-.day-top .sub{color:var(--dim);font-size:.78rem}
+.day-top .dow{font-family:'Fraunces',serif;font-weight:600;font-size:1.4rem}
 .missbadge{margin-left:auto;font-size:.72rem;font-weight:600;padding:5px 13px;border-radius:99px;white-space:nowrap}
 .missbadge.bad{background:var(--badbg);color:var(--bad)}
 .missbadge.good{background:var(--okbg);color:var(--ok)}
@@ -556,7 +555,7 @@ function buildDays(){
       <div class="day-main">
       <div class="day-top">
         <div class="datebox"><div class="dn">${cur.getDate()}</div><div class="dm">${MO[cur.getMonth()]}</div></div>
-        <div><div class="dow">${DOW[cur.getDay()]}</div><div class="sub">${MO[cur.getMonth()]} ${cur.getDate()}, 2026</div></div>
+        <div class="dow">${DOW[cur.getDay()]}</div>
         ${badge}</div>
       <div class="lanes">${lanes}${missline}</div></div></div>`;
     cur=new Date(+cur+864e5);
