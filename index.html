@@ -25,17 +25,22 @@ a{color:var(--terra)}
 .wrap{max-width:880px;margin:0 auto;padding:0 18px}
 
 /* ---------- HERO ---------- */
-header{position:relative;overflow:hidden;background:linear-gradient(180deg,#efe4d1 0%,#f4ecdf 55%,var(--bg) 100%)}
-.horizon{position:absolute;bottom:-1px;left:0;width:100%;pointer-events:none}
-.hero-inner{position:relative;padding:64px 0 96px;text-align:center}
-.kicker{font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--espresso);opacity:.75;margin-bottom:14px}
-h1{font-size:clamp(2.6rem,7vw,4.4rem);line-height:1.04;color:var(--ink)}
-h1 em{font-style:italic;color:var(--terra)}
-.hero-sub{margin:16px auto 0;color:var(--dim);max-width:480px;font-size:.98rem}
-.count{display:flex;gap:10px;justify-content:center;margin-top:30px}
-.count .cell{background:rgba(255,253,249,.75);border:1px solid var(--line);border-radius:14px;padding:10px 0;text-align:center;min-width:74px;backdrop-filter:blur(4px)}
-.count .n{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:600;color:var(--espresso);font-variant-numeric:tabular-nums;line-height:1.15}
-.count .lbl{font-size:.6rem;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;font-weight:600}
+header{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center;padding:24px;
+  background:
+    linear-gradient(rgba(26,18,10,.28),rgba(26,18,10,.5)),
+    url('images/hero.jpg') center/cover no-repeat,
+    linear-gradient(180deg,#d99a55 0%,#c0713a 45%,#9c552c 78%,#7d4423 100%);
+  color:#fff}
+.kicker{font-size:.72rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+h1{font-size:clamp(4rem,16vw,12rem);line-height:.95;font-weight:600;color:#fff;text-shadow:0 3px 30px rgba(20,12,5,.35)}
+h1 em{font-style:italic}
+.count{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.count .cell{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:10px 0;text-align:center;min-width:74px;backdrop-filter:blur(6px)}
+.count .n{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;line-height:1.15}
+.count .lbl{font-size:.6rem;letter-spacing:.16em;color:rgba(255,255,255,.8);text-transform:uppercase;font-weight:600}
+.scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.85);font-size:1.3rem;animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+@media(prefers-reduced-motion:reduce){.scrollcue{animation:none}}
 
 /* ---------- TABS ---------- */
 .tabbar{position:sticky;top:0;z-index:100;background:rgba(246,242,234,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
@@ -62,10 +67,11 @@ h1 em{font-style:italic;color:var(--terra)}
 .phase-head .dates{color:var(--dim);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
 .phase-img{width:100%;height:200px;object-fit:cover;border-radius:var(--r);margin:0 0 12px;display:block;border:1px solid var(--line);box-shadow:var(--shadow)}
 @media(min-width:700px){.phase-img{height:260px}}
-/* day-to-day snap scrolling */
-html.snap{scroll-snap-type:y proximity}
-html.snap .day{scroll-snap-align:start;scroll-margin-top:74px}
-html.snap header{scroll-snap-align:start} /* top of page is a valid resting point */
+/* two snap points only: hero and the calendar; days scroll free */
+html{scroll-snap-type:y proximity}
+header{scroll-snap-align:start}
+main{scroll-snap-align:start;scroll-margin-top:58px}
+.day{scroll-margin-top:74px}
 /* vertical location rail */
 .day{display:flex}
 .dayloc{flex:0 0 38px;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:800;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;padding:14px 0;user-select:none;white-space:nowrap;color:var(--info);background:rgba(61,111,150,.08)}
@@ -188,15 +194,10 @@ footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
 <body>
 
 <header>
-  <div class="hero-inner wrap">
-    <div class="kicker">Namibia · South Africa — Aug 17 → Sep 8, 2026</div>
-    <h1>Africa <em>2026</em></h1>
-    <div class="count" id="count"></div>
-  </div>
-  <svg class="horizon" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,70 C260,30 480,86 760,62 C1040,40 1240,84 1440,58 L1440,110 L0,110 Z" fill="#efe8da"/>
-    <path d="M0,92 C320,66 620,102 900,84 C1160,68 1320,96 1440,86 L1440,110 L0,110 Z" fill="#f6f2ea"/>
-  </svg>
+  <div class="kicker">Namibia · South Africa · Aug 17 – Sep 8</div>
+  <h1>AFRICA <em>’26</em></h1>
+  <div class="count" id="count"></div>
+  <div class="scrollcue">▾</div>
 </header>
 
 <div class="tabbar"><div class="wrap">
@@ -676,30 +677,10 @@ document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
   b.classList.add("on");
   $("#v-"+b.dataset.v).classList.add("on");
-  document.documentElement.classList.toggle("snap",b.dataset.v==="days");
   history.replaceState(null,"","#"+b.dataset.v);
   window.scrollTo({top:0});
 }));
-document.documentElement.classList.add("snap");
 if(location.hash){const b=document.querySelector(`.tabbtn[data-v="${location.hash.slice(1)}"]`);if(b)b.click();}
-
-/* fast scrolling temporarily disables snap */
-(function(){
-  let lastY=window.scrollY,lastT=performance.now(),fast=0,timer;
-  window.addEventListener("scroll",()=>{
-    const onDays=document.querySelector(".tabbtn.on").dataset.v==="days";
-    if(!onDays)return;
-    const y=window.scrollY,t=performance.now();
-    const v=Math.abs(y-lastY)/Math.max(t-lastT,1); /* px per ms */
-    lastY=y;lastT=t;
-    if(v>2.5)fast++; else if(v<0.8)fast=Math.max(fast-1,0);
-    if(fast>=3)document.documentElement.classList.remove("snap");
-    clearTimeout(timer);
-    timer=setTimeout(()=>{fast=0;
-      if(document.querySelector(".tabbtn.on").dataset.v==="days")document.documentElement.classList.add("snap");
-    },800);
-  },{passive:true});
-})();
 </script>
 </body>
 </html>
