@@ -201,7 +201,6 @@ footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
 
 <div class="tabbar"><div class="wrap">
   <button class="tabbtn on" data-v="days">Day by Day</button>
-  <button class="tabbtn" data-v="cal">Calendar</button>
   <button class="tabbtn" data-v="todo">To-Do <span class="b" id="todocount"></span></button>
   <button class="tabbtn" data-v="info">Crew &amp; Money</button>
 </div></div>
@@ -210,6 +209,11 @@ footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
 
 <!-- ============ DAYS ============ -->
 <div class="view on" id="v-days">
+  <div class="cal-grid" id="calroot" style="margin-bottom:14px"></div>
+  <div class="cal-legend" style="margin:0 0 30px">
+    <span class="k"><span class="swatch" style="background:var(--ok)"></span>All set</span>
+    <span class="k"><span class="swatch" style="background:var(--bad)"></span>Something missing</span>
+  </div>
   <div class="legend">
     <span class="k"><span class="swatch" style="background:var(--ok)"></span>Booked</span>
     <span class="k"><span class="swatch" style="background:var(--bad)"></span>Needs booking</span>
@@ -218,16 +222,6 @@ footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
     <span class="k">◀ ▶ spans multiple days</span>
   </div>
   <div id="daysroot"></div>
-</div>
-
-<!-- ============ CALENDAR ============ -->
-<div class="view" id="v-cal">
-  <div class="cal-grid" id="calroot"></div>
-  <div class="cal-legend">
-    <span class="k"><span class="swatch" style="background:var(--ok)"></span>All set</span>
-    <span class="k"><span class="swatch" style="background:var(--bad)"></span>Something missing</span>
-    <span class="k">Select a day to open it</span>
-  </div>
 </div>
 
 <!-- ============ TODO ============ -->
@@ -611,12 +605,9 @@ function buildCalendar(){
 }
 buildCalendar();
 function gotoDay(ds){
-  document.querySelector('.tabbtn[data-v="days"]').click();
-  setTimeout(()=>{
-    const el=document.getElementById("day-"+ds);
-    if(el){el.scrollIntoView({behavior:"smooth",block:"start"});
-      el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);}
-  },80);
+  const el=document.getElementById("day-"+ds);
+  if(el){el.scrollIntoView({behavior:"smooth",block:"start"});
+    el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);}
 }
 
 /* ================= TODO ================= */
