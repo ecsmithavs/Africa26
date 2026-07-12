@@ -66,6 +66,10 @@ h1 em{font-style:italic;color:var(--terra)}
 html.snap{scroll-snap-type:y proximity}
 html.snap .day{scroll-snap-align:start;scroll-margin-top:74px}
 html.snap header{scroll-snap-align:start} /* top of page is a valid resting point */
+/* vertical location rail */
+.day{display:flex}
+.dayloc{flex:0 0 38px;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:800;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;padding:14px 0;user-select:none;white-space:nowrap}
+.day-main{flex:1;min-width:0}
 .day.flash{border-color:var(--sand);box-shadow:0 0 0 3px rgba(201,169,124,.35)}
 /* calendar */
 .cal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
@@ -409,6 +413,16 @@ const TRIP = {
 
   noStayNeeded: ["2026-08-17","2026-09-07","2026-09-08"],
 
+  /* vertical rail label per day */
+  locations: {
+    "2026-08-17":"EN ROUTE","2026-08-18":"EN ROUTE","2026-08-19":"WINDHOEK","2026-08-20":"WINDHOEK",
+    "2026-08-21":"ETOSHA","2026-08-22":"ETOSHA","2026-08-23":"ETOSHA","2026-08-24":"WINDHOEK",
+    "2026-08-25":"EN ROUTE","2026-08-26":"GATHERING","2026-08-27":"SERVICE","2026-08-28":"CONVENTION",
+    "2026-08-29":"CONVENTION","2026-08-30":"CONVENTION","2026-08-31":"BRANCH TOUR","2026-09-01":"EN ROUTE",
+    "2026-09-02":"CAPE TOWN","2026-09-03":"CAPE TOWN","2026-09-04":"CAPE TOWN","2026-09-05":"CAPE TOWN",
+    "2026-09-06":"CAPE TOWN","2026-09-07":"CAPE TOWN","2026-09-08":"EN ROUTE",
+  },
+
   crew: [
     {who:"E", role:"Via Hong Kong", legs:[
       {r:"CX831 · JFK → HKG · Aug 17", m:"2:50 PM → 7:05 PM+1 · First 1A · 777-300ER"},
@@ -538,11 +552,13 @@ function buildDays(){
       : `<span class="missbadge good">All set</span>`;
     const missline=uniq.length?`<div class="missline">Missing: ${uniq.join(" · ")}</div>`:"";
     html+=`<div class="day" id="day-${date}" style="border-left:4px solid ${ph.color}">
+      <div class="dayloc" style="color:${ph.color};background:${ph.color}14">${TRIP.locations[date]||""}</div>
+      <div class="day-main">
       <div class="day-top">
         <div class="datebox"><div class="dn">${cur.getDate()}</div><div class="dm">${MO[cur.getMonth()]}</div></div>
         <div><div class="dow">${DOW[cur.getDay()]}</div><div class="sub">${MO[cur.getMonth()]} ${cur.getDate()}, 2026</div></div>
         ${badge}</div>
-      <div class="lanes">${lanes}${missline}</div></div>`;
+      <div class="lanes">${lanes}${missline}</div></div></div>`;
     cur=new Date(+cur+864e5);
   }
   $("#daysroot").innerHTML=html;
