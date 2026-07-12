@@ -65,6 +65,7 @@ h1 em{font-style:italic;color:var(--terra)}
 /* day-to-day snap scrolling */
 html.snap{scroll-snap-type:y proximity}
 html.snap .day{scroll-snap-align:start;scroll-margin-top:74px}
+html.snap header{scroll-snap-align:start} /* top of page is a valid resting point */
 .day.flash{border-color:var(--sand);box-shadow:0 0 0 3px rgba(201,169,124,.35)}
 /* calendar */
 .cal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
