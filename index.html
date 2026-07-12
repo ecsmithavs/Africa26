@@ -68,8 +68,9 @@ html.snap .day{scroll-snap-align:start;scroll-margin-top:74px}
 html.snap header{scroll-snap-align:start} /* top of page is a valid resting point */
 /* vertical location rail */
 .day{display:flex}
-.dayloc{flex:0 0 38px;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:800;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;padding:14px 0;user-select:none;white-space:nowrap}
+.dayloc{flex:0 0 38px;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:800;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;padding:14px 0;user-select:none;white-space:nowrap;color:var(--info);background:rgba(61,111,150,.08)}
 .day-main{flex:1;min-width:0}
+.blurb{color:var(--dim);font-size:.83rem;margin-top:1px}
 .day.flash{border-color:var(--sand);box-shadow:0 0 0 3px rgba(201,169,124,.35)}
 /* calendar */
 .cal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
@@ -410,6 +411,33 @@ const TRIP = {
 
   noStayNeeded: ["2026-08-17","2026-09-07","2026-09-08"],
 
+  /* one-line summary per day — update as plans firm up */
+  blurbs: {
+    "2026-08-17":"Ethan and Preston fly out of New York; Matt is en route from Atlanta.",
+    "2026-08-18":"Matt lands in Joburg; Ethan connects in Hong Kong, Preston in London.",
+    "2026-08-19":"Ethan lands Joburg, Preston lands Windhoek — everyone heads for Namibia.",
+    "2026-08-20":"Gear-up day in Windhoek: groceries, SIMs, camp supplies. Daniel's arrival TBD.",
+    "2026-08-21":"Drive north and check in at Etosha Safari Camp.",
+    "2026-08-22":"Full day on safari in Etosha.",
+    "2026-08-23":"Morning safari, then move to the lodge for the night.",
+    "2026-08-24":"Drive back to Windhoek.",
+    "2026-08-25":"Fly to Johannesburg and check in at The Capital on the Park.",
+    "2026-08-26":"Morning gathering; free afternoon in Sandton.",
+    "2026-08-27":"Field ministry with the Helderkruin congregation.",
+    "2026-08-28":"Convention — day one.",
+    "2026-08-29":"Convention — day two.",
+    "2026-08-30":"Convention — final day.",
+    "2026-08-31":"Bethel branch tour.",
+    "2026-09-01":"Check out, fly to Cape Town, settle in.",
+    "2026-09-02":"Cape Town — plans open.",
+    "2026-09-03":"Cape Town — plans open.",
+    "2026-09-04":"Cape Town — plans open.",
+    "2026-09-05":"Cape Town — plans open.",
+    "2026-09-06":"Last full day together; returns still TBD for Preston, Daniel, Matt.",
+    "2026-09-07":"Final Cape Town day — Ethan flies home overnight.",
+    "2026-09-08":"Ethan lands Newark.",
+  },
+
   /* vertical rail label per day */
   locations: {
     "2026-08-17":"EN ROUTE","2026-08-18":"EN ROUTE","2026-08-19":"WINDHOEK","2026-08-20":"WINDHOEK",
@@ -547,12 +575,12 @@ function buildDays(){
     const badge=uniq.length
       ? `<span class="missbadge bad">${uniq.length} missing</span>`
       : `<span class="missbadge good">All set</span>`;
-    html+=`<div class="day" id="day-${date}" style="border-left:4px solid ${ph.color}">
-      <div class="dayloc" style="color:${ph.color};background:${ph.color}14">${TRIP.locations[date]||""}</div>
+    html+=`<div class="day" id="day-${date}" style="border-left:4px solid var(--info)">
+      <div class="dayloc">${TRIP.locations[date]||""}</div>
       <div class="day-main">
       <div class="day-top">
         <div class="datebox"><div class="dn">${cur.getDate()}</div><div class="dm">${MO[cur.getMonth()]}</div></div>
-        <div class="dow">${DOW[cur.getDay()]}</div>
+        <div style="min-width:0"><div class="dow">${DOW[cur.getDay()]}</div><div class="blurb">${TRIP.blurbs[date]||""}</div></div>
         ${badge}</div>
       <div class="lanes">${lanes}</div></div></div>`;
     cur=new Date(+cur+864e5);
