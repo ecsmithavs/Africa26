@@ -117,7 +117,6 @@ html.snap header{scroll-snap-align:start} /* top of page is a valid resting poin
 .lane-det{display:none;padding:2px 16px 14px 53px;font-size:.85rem;color:var(--dim)}
 .lane-det b{color:var(--ink)}
 .lane.open .lane-det{display:block}
-.missline{margin:8px 4px 2px;padding:9px 14px;border-radius:11px;background:var(--badbg);color:var(--bad);font-size:.8rem;font-weight:500}
 
 /* ---------- TODO ---------- */
 .mission-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
@@ -282,7 +281,6 @@ footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
         <li>Gondwana / Etosha Safari Camp: +264 61 400 247</li>
         <li>Bos Otter 4x4 Rentals: bosotter4x4@gmail.com · +264 81 852 6193</li>
         <li>Convention venue: Gallagher Convention Centre, 19 Richards Drive, Midrand</li>
-        <li style="color:var(--dim)">Booking references are kept off this page — ask Ethan.</li>
       </ul>
     </div>
   </div>
@@ -333,7 +331,7 @@ const TRIP = {
     {from:"2026-08-19", to:"2026-08-21", name:"Windhoek — pre-Etosha, 2 nights", status:"gap",
      det:"Depends on when JNB→WDH gets booked. Preston lands WDH 1:20 PM Aug 19 either way. Candidates: Hilton Windhoek, The Weinberg, Urban Camp."},
     {from:"2026-08-21", to:"2026-08-23", name:"Etosha Safari Camp · Gondwana", status:"ok",
-     det:"<b>Booked &amp; paid.</b> Camping2Go unit · 4 adults · N$8,672 = $509.19, paid by Ethan Nov 13 '25 ($127.30 each). Gondwana: +264 61 400 247. 10 min from Andersson Gate. Booking ref: ask Ethan."},
+     det:"<b>Booked &amp; paid.</b> Camping2Go unit · 4 adults · N$8,672 = $509.19, paid by Ethan Nov 13 '25 ($127.30 each). Gondwana: +264 61 400 247. 10 min from Andersson Gate."},
     {from:"2026-08-23", to:"2026-08-24", name:"Safari lodge — night after camp", status:"gap",
      det:"From Ethan's note: candidate <b>ugfl.com.na</b>. Alternatives: Okonjima (AfriCat, on the route back) or Etosha Safari Lodge upgrade."},
     {from:"2026-08-24", to:"2026-08-25", name:"Windhoek — 1 night", status:"gap",
@@ -549,7 +547,6 @@ function buildDays(){
     const badge=uniq.length
       ? `<span class="missbadge bad">${uniq.length} missing</span>`
       : `<span class="missbadge good">All set</span>`;
-    const missline=uniq.length?`<div class="missline">Missing: ${uniq.join(" · ")}</div>`:"";
     html+=`<div class="day" id="day-${date}" style="border-left:4px solid ${ph.color}">
       <div class="dayloc" style="color:${ph.color};background:${ph.color}14">${TRIP.locations[date]||""}</div>
       <div class="day-main">
@@ -557,7 +554,7 @@ function buildDays(){
         <div class="datebox"><div class="dn">${cur.getDate()}</div><div class="dm">${MO[cur.getMonth()]}</div></div>
         <div class="dow">${DOW[cur.getDay()]}</div>
         ${badge}</div>
-      <div class="lanes">${lanes}${missline}</div></div></div>`;
+      <div class="lanes">${lanes}</div></div></div>`;
     cur=new Date(+cur+864e5);
   }
   $("#daysroot").innerHTML=html;
