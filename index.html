@@ -520,10 +520,10 @@ const ICONS={
 /* countdown */
 function tickCount(){
   const d=new Date(TRIP.departISO)-new Date();
-  const cells=d>0?[[Math.floor(d/864e5),"days"],[Math.floor(d/36e5)%24,"hours"],[Math.floor(d/6e4)%60,"min"]]:[["✈","in progress"]];
+  const cells=d>0?[[Math.floor(d/864e5),"days"],[Math.floor(d/36e5)%24,"hours"],[Math.floor(d/6e4)%60,"min"],[Math.floor(d/1e3)%60,"sec"]]:[["✈","in progress"]];
   $("#count").innerHTML=cells.map(c=>`<div class="cell"><div class="n">${c[0]}</div><div class="lbl">${c[1]}</div></div>`).join("");
 }
-tickCount(); setInterval(tickCount,30000);
+tickCount(); setInterval(tickCount,1000);
 
 /* ================= DAYS ================= */
 function laneHTML(kind,item,date){
