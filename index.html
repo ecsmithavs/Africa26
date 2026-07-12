@@ -336,7 +336,7 @@ const TRIP = {
     {from:"2026-09-01", to:"2026-09-06", name:"Cape Town — 5 nights", status:"gap",
      det:"4 guests, 5 nights. A house/apartment in City Bowl, Sea Point or the V&amp;A area beats four hotel rooms. Book soon — weekends fill."},
     {from:"2026-09-06", to:"2026-09-08", name:"Cape Town — extra nights", status:"todo",
-     det:"Ethan flies 7:50 PM Sep 7 (needs the Sep 6–7 night). Preston/Daniel/Matt depend on their return flights — not booked yet."},
+     det:"Ethan (7:50 PM) and Matt (11:15 PM) fly out Sep 7 — both need the Sep 6–7 night. Preston and Daniel depend on their returns — not booked yet."},
   ],
 
   cars: [
@@ -351,8 +351,8 @@ const TRIP = {
      det:"Cathay Pacific · First, seat 1A · 777-300ER · lands 7:05 PM Aug 18 · JFK Terminal 8."},
     {date:"2026-08-17", time:"8:50 PM", who:"P", txt:"UA940 · Newark → London", status:"ok",
      det:"United · seat 3A · lands 9:20 AM Aug 18."},
-    {date:"2026-08-17", time:"", who:"M", txt:"DL200 · Atlanta → Johannesburg", status:"info",
-     det:"Delta direct — confirm exact departure time. Lands JNB 7:40 PM Aug 18."},
+    {date:"2026-08-17", time:"2:45 PM", who:"M", txt:"DL2104 + DL200 · Austin → Johannesburg", status:"ok",
+     det:"Delta via Atlanta · Comfort Extra · lands JNB 7:40 PM Aug 18 (21h55m) · 2 free checked bags."},
     {date:"2026-08-18", time:"7:40 PM", who:"M", txt:"Lands Johannesburg (DL200)", status:"ok",
      det:"O.R. Tambo. Overnights near the airport (hotel to decide)."},
     {date:"2026-08-18", time:"9:00 PM", who:"P", txt:"ET701 · London → Addis Ababa", status:"ok",
@@ -373,11 +373,14 @@ const TRIP = {
      det:"Lands 3:35 PM. Airline + booking reference not on file — send it and this gets updated. Then ~30 min to Sandton (Gautrain or Uber)."},
     {date:"2026-09-01", time:"2:30 PM", who:"", txt:"Johannesburg → Cape Town — all four", status:"gap",
      det:"Not booked. Convention itinerary lists group departure 2:30 PM; hotel checkout 11 AM. ~2h flight — FlySafair, Airlink, LIFT, SAA fly it near-hourly."},
-    {date:"2026-09-06", time:"", who:"", txt:"Preston / Daniel / Matt fly home", status:"gap",
+    {date:"2026-09-06", time:"", who:"", txt:"Preston / Daniel fly home", status:"gap",
      det:"Not booked. Target Sep 6–7. Via JNB, or from CPT: United to EWR (not daily), Delta CPT–ATL."},
     {date:"2026-09-07", time:"7:50 PM", who:"E", txt:"UA2222 · Cape Town → Newark", status:"ok",
      det:"United direct · lands 5:05 AM Sep 8. (No direct flight on Sep 6 — hence the extra day.)"},
+    {date:"2026-09-07", time:"11:15 PM", who:"M", txt:"DL9502 + DL75 + DL1170 · Cape Town → Austin", status:"ok",
+     det:"Delta · 2 stops · Europe Economy Refundable · lands Austin 8:22 PM Sep 8 (28h7m)."},
     {date:"2026-09-08", time:"5:05 AM", who:"E", txt:"Lands Newark", status:"ok", det:""},
+    {date:"2026-09-08", time:"8:22 PM", who:"M", txt:"Lands Austin", status:"ok", det:""},
   ],
 
   activities: [
@@ -407,7 +410,7 @@ const TRIP = {
 
   /* one-line summary per day — update as plans firm up */
   blurbs: {
-    "2026-08-17":"Ethan and Preston fly out of New York; Matt is en route from Atlanta.",
+    "2026-08-17":"Ethan and Preston fly out of New York; Matt out of Austin.",
     "2026-08-18":"Matt lands in Joburg; Ethan connects in Hong Kong, Preston in London.",
     "2026-08-19":"Ethan lands Joburg, Preston lands Windhoek — everyone heads for Namibia.",
     "2026-08-20":"Gear-up day in Windhoek: groceries, SIMs, camp supplies. Daniel's arrival TBD.",
@@ -427,9 +430,9 @@ const TRIP = {
     "2026-09-03":"Cape Town — plans open.",
     "2026-09-04":"Cape Town — plans open.",
     "2026-09-05":"Cape Town — plans open.",
-    "2026-09-06":"Last full day together; returns still TBD for Preston, Daniel, Matt.",
-    "2026-09-07":"Final Cape Town day — Ethan flies home overnight.",
-    "2026-09-08":"Ethan lands Newark.",
+    "2026-09-06":"Last full day together; returns still TBD for Preston and Daniel.",
+    "2026-09-07":"Final Cape Town day — Ethan and Matt fly home tonight.",
+    "2026-09-08":"Ethan lands Newark early; Matt lands Austin in the evening.",
   },
 
   /* vertical rail label per day */
@@ -456,9 +459,9 @@ const TRIP = {
     {who:"D", role:"Flights outstanding", legs:[
       {r:"All flights unknown", m:"Needs: arrival by Aug 20 · JNB→WDH or direct WDH · return", miss:true}]},
     {who:"M", role:"Arrives first · Aug 18", legs:[
-      {r:"DL200 · ATL → JNB · Aug 18", m:"Lands 7:40 PM · needs Aug 18 hotel"},
-      {r:"JNB → WDH · Aug 19–20", m:"Needs booking", miss:true},
-      {r:"Return · ~Sep 6–7", m:"Needs booking", miss:true}]},
+      {r:"DL2104 + DL200 · AUS → JNB · Aug 17", m:"2:45 PM via Atlanta → lands 7:40 PM Aug 18 · Comfort Extra"},
+      {r:"DL9502 + DL75 + DL1170 · CPT → AUS · Sep 7", m:"11:15 PM → 8:22 PM Sep 8 · 2 stops"},
+      {r:"JNB → WDH · Aug 19–20", m:"Needs booking", miss:true}]},
   ],
 
   costs: [ {item:"Etosha Safari Camp (N$8,672)", by:"Ethan", usd:509.19} ],
@@ -471,10 +474,9 @@ const TRIP = {
     {p:"HIGH", t:"JNB → CPT flights", s:"Sep 1 afternoon, after the 2:30 PM group departure."},
     {p:"MED", t:"Safari lodge Aug 23–24", s:"ugfl.com.na from the note, or Okonjima / Gondwana lodge."},
     {p:"MED", t:"Windhoek hotels: Aug 19–21 + Aug 24", s:"Three unbooked Windhoek nights in total."},
-    {p:"MED", t:"Returns: Preston, Daniel, Matt", s:"Target Sep 6–7 from CPT. No direct UA on Sep 6."},
+    {p:"MED", t:"Returns: Preston, Daniel", s:"Target Sep 6–7 from CPT. No direct UA on Sep 6."},
     {p:"MED", t:"Matt's Aug 18 JNB hotel", s:"Lands 7:40 PM solo."},
     {p:"MED", t:"Confirm WDH→JNB Aug 25 reference", s:"1:45 PM noted; no airline/reference on file."},
-    {p:"LOW", t:"Confirm Matt's DL200 details", s:"Departure time + baggage for the safari leg."},
     {p:"LOW", t:"Passports: 6-month validity + 2 blank pages", s:"South Africa requires 2 blank pages; check all four."},
     {p:"LOW", t:"Malaria check with a travel clinic", s:"Etosha is seasonal risk; late August is dry (low)."},
   ],
@@ -490,6 +492,7 @@ const TRIP = {
   ],
 
   log: [
+    {d:"Jul 12", t:"Matt's flights booked — Austin → Joburg Aug 17 (Delta via ATL), Cape Town → Austin return Sep 7."},
     {d:"Jul 12", t:"Hilux 4x4 quote in from Bos Otter Rentals (Preston) — N$13,800, Aug 19–24, camping kit included. Deposit due to secure."},
     {d:"Jul 12", t:"Redesign — day-by-day view with per-day booking status and details."},
     {d:"Jul 12", t:"Site launched."},
