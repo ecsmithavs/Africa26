@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Africa 2026 · Namibia & South Africa</title>
+<meta name="description" content="Africa 2026 — Namibia & South Africa, August 17 – September 8.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f2ea; --card:#fffdf9; --card2:#faf6ee; --line:#e6ddcd; --line2:#efe8da;
+  --ink:#26201a; --dim:#83786a;
+  --espresso:#5b4331; --terra:#b0592f; --sand:#c9a97c; --sage:#5f7257;
+  --ok:#3e7a4e; --okbg:#e9f1ea; --warn:#a8741a; --warnbg:#f7eeda; --bad:#b3442e; --badbg:#f8e9e4; --info:#3d6f96; --infobg:#e8f0f6;
+  --r:16px; --shadow:0 1px 2px rgba(38,32,26,.05),0 4px 16px rgba(38,32,26,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.55;font-size:15.5px}
+::selection{background:var(--sand);color:#fff}
+h1,h2,.serif{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-.01em}
+a{color:var(--terra)}
+.wrap{max-width:880px;margin:0 auto;padding:0 18px}
+
+/* ---------- HERO ---------- */
+header{position:relative;overflow:hidden;background:linear-gradient(180deg,#efe4d1 0%,#f4ecdf 55%,var(--bg) 100%)}
+.horizon{position:absolute;bottom:-1px;left:0;width:100%;pointer-events:none}
+.hero-inner{position:relative;padding:64px 0 96px;text-align:center}
+.kicker{font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--espresso);opacity:.75;margin-bottom:14px}
+h1{font-size:clamp(2.6rem,7vw,4.4rem);line-height:1.04;color:var(--ink)}
+h1 em{font-style:italic;color:var(--terra)}
+.hero-sub{margin:16px auto 0;color:var(--dim);max-width:480px;font-size:.98rem}
+.count{display:flex;gap:10px;justify-content:center;margin-top:30px}
+.count .cell{background:rgba(255,253,249,.75);border:1px solid var(--line);border-radius:14px;padding:10px 0;text-align:center;min-width:74px;backdrop-filter:blur(4px)}
+.count .n{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:600;color:var(--espresso);font-variant-numeric:tabular-nums;line-height:1.15}
+.count .lbl{font-size:.6rem;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;font-weight:600}
+
+/* ---------- TABS ---------- */
+.tabbar{position:sticky;top:0;z-index:100;background:rgba(246,242,234,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.tabbar .wrap{display:flex;gap:8px;padding-top:12px;padding-bottom:12px;overflow-x:auto;scrollbar-width:none;justify-content:center}
+.tabbar .wrap::-webkit-scrollbar{display:none}
+.tabbtn{font-family:'Inter';font-weight:600;font-size:.86rem;color:var(--dim);background:transparent;border:1px solid transparent;border-radius:99px;padding:9px 20px;cursor:pointer;white-space:nowrap;transition:.2s}
+.tabbtn:hover{color:var(--ink);background:var(--card2)}
+.tabbtn.on{background:var(--espresso);color:#f8f3ec;border-color:var(--espresso)}
+.tabbtn .b{display:inline-block;background:rgba(255,255,255,.22);border-radius:99px;font-size:.7rem;padding:1px 8px;margin-left:6px;font-weight:700}
+.tabbtn:not(.on) .b{background:var(--badbg);color:var(--bad)}
+.view{display:none;padding:34px 0 70px}
+.view.on{display:block}
+
+/* ---------- LEGEND ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 24px;font-size:.78rem;color:var(--dim);align-items:center;justify-content:center}
+.legend .k{display:flex;gap:6px;align-items:center}
+.swatch{width:9px;height:9px;border-radius:50%}
+
+/* ---------- PHASES & DAYS ---------- */
+.phase-head{display:flex;align-items:baseline;gap:12px;margin:40px 0 14px}
+.phase-head:first-of-type{margin-top:0}
+.phase-head .tag{font-family:'Fraunces',serif;font-weight:600;font-size:1.35rem;color:var(--ink)}
+.phase-head .bar-accent{width:26px;height:4px;border-radius:99px;background:var(--pc);position:relative;top:-4px}
+.phase-head .dates{color:var(--dim);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.phase-img{width:100%;height:200px;object-fit:cover;border-radius:var(--r);margin:0 0 12px;display:block;border:1px solid var(--line);box-shadow:var(--shadow)}
+@media(min-width:700px){.phase-img{height:260px}}
+/* day-to-day snap scrolling */
+html.snap{scroll-snap-type:y proximity}
+html.snap .day{scroll-snap-align:start;scroll-margin-top:74px}
+.day.flash{border-color:var(--sand);box-shadow:0 0 0 3px rgba(201,169,124,.35)}
+/* calendar */
+.cal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.cal{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.cal h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.15rem;text-align:center;margin-bottom:14px}
+.cal7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal7 .wd{font-size:.6rem;font-weight:700;letter-spacing:.1em;color:var(--dim);text-align:center;padding:2px 0;text-transform:uppercase}
+.cd{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.84rem;color:#c9c0b0;background:transparent}
+.cd.trip{background:var(--card2);border:1px solid var(--line2);border-top:3px solid var(--pc);color:var(--ink);cursor:pointer;font-weight:600;transition:.15s}
+.cd.trip:hover{border-color:var(--sand);transform:translateY(-1px)}
+.cd .dotm{width:6px;height:6px;border-radius:50%;margin-top:3px}
+.cal-legend{display:flex;gap:16px;justify-content:center;margin:18px 0 0;font-size:.76rem;color:var(--dim)}
+.cal-legend .k{display:flex;gap:6px;align-items:center}
+.day{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);
+  opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.day.vis{opacity:1;transform:none}
+.day-top{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line2)}
+.datebox{width:52px;height:52px;border-radius:13px;background:var(--card2);border:1px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto}
+.datebox .dn{font-family:'Fraunces',serif;font-weight:600;font-size:1.35rem;line-height:1;color:var(--espresso)}
+.datebox .dm{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.day-top .dow{font-weight:600;font-size:.95rem}
+.day-top .sub{color:var(--dim);font-size:.78rem}
+.missbadge{margin-left:auto;font-size:.72rem;font-weight:600;padding:5px 13px;border-radius:99px;white-space:nowrap}
+.missbadge.bad{background:var(--badbg);color:var(--bad)}
+.missbadge.good{background:var(--okbg);color:var(--ok)}
+.lanes{padding:8px 10px 12px}
+
+/* lane rows */
+.lane{border-radius:12px;margin:3px 0;overflow:hidden;transition:background .2s}
+.lane-row{display:flex;align-items:center;gap:11px;padding:10px 10px;cursor:pointer;user-select:none}
+.lane-row:hover{background:var(--card2)}
+.ico{width:32px;height:32px;border-radius:10px;background:var(--card2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--espresso)}
+.ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.lane .txt{font-size:.9rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-weight:500}
+.lane .txt small{color:var(--dim);font-weight:400}
+.arr{font-size:.68rem;color:var(--sand);flex:0 0 auto}
+.st{font-size:.68rem;font-weight:600;padding:3.5px 11px;border-radius:99px;white-space:nowrap;flex:0 0 auto}
+.st-ok{background:var(--okbg);color:var(--ok)}
+.st-gap{background:var(--badbg);color:var(--bad)}
+.st-todo{background:var(--warnbg);color:var(--warn)}
+.st-info{background:var(--infobg);color:var(--info)}
+.st-na{background:var(--card2);color:var(--dim)}
+.caret{color:var(--dim);flex:0 0 auto;transition:transform .25s;font-size:.62rem}
+.lane.open{background:var(--card2)}
+.lane.open .caret{transform:rotate(90deg)}
+.lane-det{display:none;padding:2px 16px 14px 53px;font-size:.85rem;color:var(--dim)}
+.lane-det b{color:var(--ink)}
+.lane.open .lane-det{display:block}
+.missline{margin:8px 4px 2px;padding:9px 14px;border-radius:11px;background:var(--badbg);color:var(--bad);font-size:.8rem;font-weight:500}
+
+/* ---------- TODO ---------- */
+.mission-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.mission-head .pct{font-family:'Fraunces',serif;font-weight:600;font-size:2.2rem;color:var(--espresso)}
+.mission-head .cap{color:var(--dim);font-size:.85rem}
+.bar{height:8px;border-radius:99px;background:#eae2d2;overflow:hidden;flex:1;min-width:170px}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--sage),var(--ok));transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.missions{display:grid;grid-template-columns:1fr;gap:9px}
+@media(min-width:700px){.missions{grid-template-columns:1fr 1fr}}
+.mission{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 15px;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+.mission:hover{border-color:var(--sand)}
+.mission input{margin-top:3px;accent-color:var(--sage);width:17px;height:17px;flex:0 0 auto}
+.mission.done{opacity:.45}
+.mission.done .mt{text-decoration:line-through}
+.mission .mt{font-size:.9rem;font-weight:600}
+.mission .ms{color:var(--dim);font-size:.79rem;display:block;font-weight:400}
+.mpri{margin-left:auto;flex:0 0 auto}
+.addbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin:34px 0 14px;box-shadow:var(--shadow)}
+.addbox h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;margin-bottom:4px}
+.addbox p{color:var(--dim);font-size:.84rem;margin-bottom:16px}
+.addrow{display:flex;gap:8px;flex-wrap:wrap}
+.addrow select,.addrow input[type=text]{background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:11px;padding:11px 13px;font:inherit;font-size:.9rem}
+.addrow input[type=text]{flex:1;min-width:200px}
+.btn{font-weight:600;font-size:.88rem;background:var(--espresso);color:#f8f3ec;border:none;border-radius:11px;padding:11px 24px;cursor:pointer;transition:.2s}
+.btn:hover{background:#6d5340}
+.btn.ghost{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+.inbox-item{display:flex;gap:12px;align-items:flex-start;background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:.88rem}
+.inbox-item .type{font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--info);flex:0 0 auto;padding-top:3px}
+.inbox-item .del{margin-left:auto;background:none;border:none;color:var(--dim);cursor:pointer;font-size:.95rem}
+.notice{font-size:.79rem;color:var(--dim);margin-top:12px}
+
+/* ---------- INFO ---------- */
+.sec{margin-bottom:46px}
+.sec h2{font-size:clamp(1.5rem,4vw,2rem);margin-bottom:16px;font-weight:600}
+.crew-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.crew{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.crew .nm{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:600;font-size:1.2rem}
+.crew .nm i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.crew .role{color:var(--dim);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin:2px 0 12px}
+.leg{border-left:2px solid var(--line);padding:4px 0 4px 12px;margin:9px 0}
+.leg .r{font-weight:600;font-size:.87rem}
+.leg .m{color:var(--dim);font-size:.78rem}
+.leg.miss{border-left-color:var(--bad)}
+.leg.miss .r{color:var(--bad)}
+.money-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:700px){.money-grid{grid-template-columns:1fr 1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:.87rem}
+th{text-align:left;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:7px 7px;border-bottom:1px solid var(--line)}
+td{padding:9px 7px;border-bottom:1px solid var(--line2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.owe{font-family:'Fraunces',serif;font-weight:600;font-size:2rem;color:var(--espresso);line-height:1.1}
+.bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.idea{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:19px;transition:transform .22s,box-shadow .22s;box-shadow:var(--shadow)}
+.idea:hover{transform:translateY(-3px);box-shadow:0 6px 22px rgba(38,32,26,.09)}
+.idea .tag{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);font-weight:700;margin-bottom:7px}
+.idea h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;margin-bottom:5px}
+.idea p{color:var(--dim);font-size:.84rem}
+.log li{list-style:none;display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:.87rem}
+.log .d{color:var(--terra);font-weight:600;min-width:82px;font-size:.8rem;padding-top:2px}
+.log .t{color:var(--dim)}
+footer{padding:44px 0 40px;text-align:center;color:var(--dim);font-size:.8rem;border-top:1px solid var(--line);margin-top:20px}
+footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hero-inner wrap">
+    <div class="kicker">Namibia · South Africa — Aug 17 → Sep 8, 2026</div>
+    <h1>Africa <em>2026</em></h1>
+    <div class="count" id="count"></div>
+  </div>
+  <svg class="horizon" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,70 C260,30 480,86 760,62 C1040,40 1240,84 1440,58 L1440,110 L0,110 Z" fill="#efe8da"/>
+    <path d="M0,92 C320,66 620,102 900,84 C1160,68 1320,96 1440,86 L1440,110 L0,110 Z" fill="#f6f2ea"/>
+  </svg>
+</header>
+
+<div class="tabbar"><div class="wrap">
+  <button class="tabbtn on" data-v="days">Day by Day</button>
+  <button class="tabbtn" data-v="cal">Calendar</button>
+  <button class="tabbtn" data-v="todo">To-Do <span class="b" id="todocount"></span></button>
+  <button class="tabbtn" data-v="info">Crew &amp; Money</button>
+</div></div>
+
+<main class="wrap">
+
+<!-- ============ DAYS ============ -->
+<div class="view on" id="v-days">
+  <div class="legend">
+    <span class="k"><span class="swatch" style="background:var(--ok)"></span>Booked</span>
+    <span class="k"><span class="swatch" style="background:var(--bad)"></span>Needs booking</span>
+    <span class="k"><span class="swatch" style="background:var(--warn)"></span>To decide</span>
+    <span class="k"><span class="swatch" style="background:var(--info)"></span>To confirm</span>
+    <span class="k">◀ ▶ spans multiple days</span>
+  </div>
+  <div id="daysroot"></div>
+</div>
+
+<!-- ============ CALENDAR ============ -->
+<div class="view" id="v-cal">
+  <div class="cal-grid" id="calroot"></div>
+  <div class="cal-legend">
+    <span class="k"><span class="swatch" style="background:var(--ok)"></span>All set</span>
+    <span class="k"><span class="swatch" style="background:var(--bad)"></span>Something missing</span>
+    <span class="k">Select a day to open it</span>
+  </div>
+</div>
+
+<!-- ============ TODO ============ -->
+<div class="view" id="v-todo">
+  <div class="mission-head">
+    <div class="pct" id="mpct"></div>
+    <div><div style="font-weight:600;font-size:.9rem">Planning progress</div><div class="cap" id="mcap"></div></div>
+    <div class="bar"><i id="mbar"></i></div>
+  </div>
+  <div class="missions" id="mlist"></div>
+
+  <div class="addbox">
+    <h3>Add a to-do or question</h3>
+    <div class="addrow">
+      <select id="addtype"><option>To-do</option><option>Question</option></select>
+      <input type="text" id="addtext" maxlength="200" placeholder="e.g. Book airport transfer · Does anyone have a GoPro?">
+      <button class="btn" id="addbtn">Add</button>
+    </div>
+    <div id="inbox" style="margin-top:16px"></div>
+    <div class="notice" id="inboxnote" style="display:none">Saved on this device. <button class="btn ghost" id="sharebtn" style="padding:7px 16px;font-size:.78rem">Share with the group</button></div>
+  </div>
+</div>
+
+<!-- ============ INFO ============ -->
+<div class="view" id="v-info">
+  <div class="sec">
+    <h2>The Crew</h2>
+    <div class="crew-grid" id="crewgrid"></div>
+  </div>
+  <div class="sec">
+    <h2>Money</h2>
+    <div class="money-grid">
+      <div class="panel">
+        <h3>Split so far</h3>
+        <div class="owe" id="owe"></div>
+        <div style="color:var(--dim);font-size:.84rem;margin-top:6px" id="owesub"></div>
+      </div>
+      <div class="panel">
+        <h3>Shared costs</h3>
+        <table id="costtable"><tr><th>Item</th><th>Paid by</th><th class="num">USD</th></tr></table>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>Ideas</h2>
+    <div class="bento" id="bento"></div>
+  </div>
+  <div class="sec">
+    <h2>Key Contacts</h2>
+    <div class="panel">
+      <ul style="list-style:none;font-size:.88rem;line-height:2.1">
+        <li>Gondwana / Etosha Safari Camp: +264 61 400 247</li>
+        <li>Bos Otter 4x4 Rentals: bosotter4x4@gmail.com · +264 81 852 6193</li>
+        <li>Convention venue: Gallagher Convention Centre, 19 Richards Drive, Midrand</li>
+        <li style="color:var(--dim)">Booking references are kept off this page — ask Ethan.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>Updates</h2>
+    <ul class="log" id="loglist"></ul>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="serif">Africa 2026</div>
+  Namibia &amp; South Africa · <span id="updated"></span>
+</footer>
+
+<script>
+/* ================================================================
+   TRIP DATA — edit this block only. Everything below renders it.
+   Status: ok=booked · gap=needs booking · todo=decide · info=confirm · na=n/a
+   Stays cover NIGHTS (from=check-in, to=check-out). Cars cover DAYS inclusive.
+================================================================ */
+const TRIP = {
+  updated: "July 12, 2026",
+  departISO: "2026-08-17T14:50:00-04:00",
+  firstDay: "2026-08-17", lastDay: "2026-09-08",
+
+  travelers: {
+    E:{name:"Ethan",  color:"#b0592f"},
+    P:{name:"Preston",color:"#3d6f96"},
+    D:{name:"Daniel", color:"#5f7257"},
+    M:{name:"Matt",   color:"#a8741a"},
+  },
+
+  phases: [
+    {id:"out", tag:"Getting There", dates:"Aug 17–19", color:"#3d6f96", from:"2026-08-17", to:"2026-08-19"},
+    {id:"nam", tag:"Namibia",       dates:"Aug 20–25", color:"#b0592f", from:"2026-08-20", to:"2026-08-25"},
+    {id:"jnb", tag:"Johannesburg · Convention", dates:"Aug 25 – Sep 1", color:"#5b4331", from:"2026-08-26", to:"2026-09-01"},
+    {id:"cpt", tag:"Cape Town",     dates:"Sep 1–6",  color:"#5f7257", from:"2026-09-02", to:"2026-09-06"},
+    {id:"home",tag:"Heading Home",  dates:"Sep 6–8",  color:"#a8741a", from:"2026-09-07", to:"2026-09-08"},
+  ],
+
+  stays: [
+    {from:"2026-08-17", to:"2026-08-18", name:"In transit — overnight flights", status:"na",
+     det:"Ethan (JFK→HKG) and Preston (EWR→LHR) sleep on planes. Matt lands JNB 7:40 PM Aug 18."},
+    {from:"2026-08-18", to:"2026-08-19", name:"Johannesburg hotel — Matt", status:"todo",
+     det:"Matt lands 7:40 PM Aug 18 and needs a bed near O.R. Tambo; Ethan lands 7:40 AM the next morning. Candidates: City Lodge ORT (walkable from terminal), Protea OR Tambo."},
+    {from:"2026-08-19", to:"2026-08-21", name:"Windhoek — pre-Etosha, 2 nights", status:"gap",
+     det:"Depends on when JNB→WDH gets booked. Preston lands WDH 1:20 PM Aug 19 either way. Candidates: Hilton Windhoek, The Weinberg, Urban Camp."},
+    {from:"2026-08-21", to:"2026-08-23", name:"Etosha Safari Camp · Gondwana", status:"ok",
+     det:"<b>Booked &amp; paid.</b> Camping2Go unit · 4 adults · N$8,672 = $509.19, paid by Ethan Nov 13 '25 ($127.30 each). Gondwana: +264 61 400 247. 10 min from Andersson Gate. Booking ref: ask Ethan."},
+    {from:"2026-08-23", to:"2026-08-24", name:"Safari lodge — night after camp", status:"gap",
+     det:"From Ethan's note: candidate <b>ugfl.com.na</b>. Alternatives: Okonjima (AfriCat, on the route back) or Etosha Safari Lodge upgrade."},
+    {from:"2026-08-24", to:"2026-08-25", name:"Windhoek — 1 night", status:"gap",
+     det:"Night before the 1:45 PM WDH→JNB flight. Anything central; return the 4x4 tonight or at the airport in the morning."},
+    {from:"2026-08-25", to:"2026-09-01", name:"The Capital on the Park · Sandton", status:"ok",
+     det:"<b>Booked</b> via the convention group. 101 Katherine Street, Sandown, Sandton. All activities pick up at the hotel. Checkout Sep 1, 11 AM."},
+    {from:"2026-09-01", to:"2026-09-06", name:"Cape Town — 5 nights", status:"gap",
+     det:"4 guests, 5 nights. A house/apartment in City Bowl, Sea Point or the V&amp;A area beats four hotel rooms. Book soon — weekends fill."},
+    {from:"2026-09-06", to:"2026-09-08", name:"Cape Town — extra nights", status:"todo",
+     det:"Ethan flies 7:50 PM Sep 7 (needs the Sep 6–7 night). Preston/Daniel/Matt depend on their return flights — not booked yet."},
+  ],
+
+  cars: [
+    {from:"2026-08-19", to:"2026-08-24", name:"Toyota Hilux 4x4 — Bos Otter Rentals", status:"info",
+     det:"<b>Quoted, not yet secured</b> — quote held by Preston. Hilux double-cab 4x4 (auto, diesel) + full camping kit: 2 rooftop tents, 4 sleeping bags, fridge, table &amp; chairs, kitchen bag, BBQ set. 6 days · N$2,000/day + N$300/day equipment = <b>N$13,800</b> (≈$765). Unlimited km, extra drivers free, airport pickup/dropoff included. <b>50% deposit (N$6,900) required to secure; balance due 10 days before pickup (by ~Aug 9).</b> Insurance excess N$10,000. Bos Otter: bosotter4x4@gmail.com · +264 81 852 6193."},
+    {from:"2026-09-01", to:"2026-09-06", name:"Cape Town transport", status:"todo",
+     det:"Decide after accommodation. Uber covers the city well; rent a car (or hire a driver) only for Peninsula/Winelands day trips."},
+  ],
+
+  travel: [
+    {date:"2026-08-17", time:"2:50 PM", who:"E", txt:"CX831 · JFK → Hong Kong", status:"ok",
+     det:"Cathay Pacific · First, seat 1A · 777-300ER · lands 7:05 PM Aug 18 · JFK Terminal 8."},
+    {date:"2026-08-17", time:"8:50 PM", who:"P", txt:"UA940 · Newark → London", status:"ok",
+     det:"United · seat 3A · lands 9:20 AM Aug 18."},
+    {date:"2026-08-17", time:"", who:"M", txt:"DL200 · Atlanta → Johannesburg", status:"info",
+     det:"Delta direct — confirm exact departure time. Lands JNB 7:40 PM Aug 18."},
+    {date:"2026-08-18", time:"7:40 PM", who:"M", txt:"Lands Johannesburg (DL200)", status:"ok",
+     det:"O.R. Tambo. Overnights near the airport (hotel to decide)."},
+    {date:"2026-08-18", time:"9:00 PM", who:"P", txt:"ET701 · London → Addis Ababa", status:"ok",
+     det:"Ethiopian Airlines · lands 6:45 AM Aug 19 · connects to ET835."},
+    {date:"2026-08-19", time:"7:40 AM", who:"E", txt:"Lands Johannesburg (CX749)", status:"ok",
+     det:"Cathay CX749 from Hong Kong · Business, seat 21A · A350-900 · Terminal B."},
+    {date:"2026-08-19", time:"1:20 PM", who:"P", txt:"Lands Windhoek (ET835)", status:"ok",
+     det:"Ethiopian ET835 from Addis Ababa · Hosea Kutako International."},
+    {date:"2026-08-19", time:"", who:"", txt:"JNB → Windhoek — Ethan, Matt (+ Daniel)", status:"gap",
+     det:"Airlink (~2h, several daily) or FlySafair. Aug 19 afternoon or Aug 20 morning. Book with checked bags."},
+    {date:"2026-08-20", time:"", who:"D", txt:"Arrival — flights unknown", status:"gap",
+     det:"Nothing on record — needs a US departure, arrival by Aug 20 (JNB, or direct to WDH via Addis like Preston), and a return."},
+    {date:"2026-08-21", time:"AM", who:"", txt:"Drive Windhoek → Etosha (~4.5 h)", status:"ok",
+     det:"B1 north via Otjiwarongo → Outjo → Andersson Gate. Fuel up in Outjo."},
+    {date:"2026-08-24", time:"", who:"", txt:"Drive back toward Windhoek (~4.5 h)", status:"ok",
+     det:"Optional stop: Okonjima / AfriCat halfway."},
+    {date:"2026-08-25", time:"1:45 PM", who:"", txt:"Windhoek → Johannesburg — all four", status:"info",
+     det:"Lands 3:35 PM. Airline + booking reference not on file — send it and this gets updated. Then ~30 min to Sandton (Gautrain or Uber)."},
+    {date:"2026-09-01", time:"2:30 PM", who:"", txt:"Johannesburg → Cape Town — all four", status:"gap",
+     det:"Not booked. Convention itinerary lists group departure 2:30 PM; hotel checkout 11 AM. ~2h flight — FlySafair, Airlink, LIFT, SAA fly it near-hourly."},
+    {date:"2026-09-06", time:"", who:"", txt:"Preston / Daniel / Matt fly home", status:"gap",
+     det:"Not booked. Target Sep 6–7. Via JNB, or from CPT: United to EWR (not daily), Delta CPT–ATL."},
+    {date:"2026-09-07", time:"7:50 PM", who:"E", txt:"UA2222 · Cape Town → Newark", status:"ok",
+     det:"United direct · lands 5:05 AM Sep 8. (No direct flight on Sep 6 — hence the extra day.)"},
+    {date:"2026-09-08", time:"5:05 AM", who:"E", txt:"Lands Newark", status:"ok", det:""},
+  ],
+
+  activities: [
+    {date:"2026-08-20", txt:"Buffer day — gear up in Windhoek", status:"todo",
+     det:"Groceries + camp supplies for Etosha, SIM cards (MTC), braai kit."},
+    {date:"2026-08-22", txt:"Full-day safari — Etosha National Park", status:"ok",
+     det:"Self-drive from Andersson Gate: Okaukuejo waterhole (rhino at dusk), Halali loop. Gates open sunrise–sunset. Dinner at camp."},
+    {date:"2026-08-23", txt:"Morning safari, then check out", status:"ok",
+     det:"Early gate entry, then transfer to the lodge night."},
+    {date:"2026-08-26", time:"8:30 AM", txt:"Encouraging Gathering (EG-26-COP-2)", status:"ok",
+     det:"Hotel pickup 8:30 AM → 12:30 PM. Free afternoon — Nelson Mandela Square is next door."},
+    {date:"2026-08-27", time:"8:15 AM", txt:"Field Ministry — Helderkruin Congregation", status:"ok",
+     det:"FS-27-MIX-4 · hotel pickup 8:15 AM → 1:00 PM."},
+    {date:"2026-08-28", time:"7:30 AM", txt:"Convention day 1 — Gallagher Convention Centre", status:"ok",
+     det:"IC-28-COP-6 · pickup + transport included · 7:30 AM → 3:30 PM · 19 Richards Drive, Midrand."},
+    {date:"2026-08-29", time:"7:30 AM", txt:"Convention day 2", status:"ok", det:"IC-29-COP-6 · 7:30 AM → 3:30 PM."},
+    {date:"2026-08-30", time:"7:30 AM", txt:"Convention day 3", status:"ok", det:"IC-30-COP-6 · 7:30 AM → 3:30 PM."},
+    {date:"2026-08-31", time:"7:30 AM", txt:"Bethel Tour (BT-31-COP-2)", status:"ok", det:"Hotel pickup 7:30 AM → 2:30 PM."},
+    {date:"2026-09-02", txt:"Cape Town — open day", status:"todo", det:"Idea: Table Mountain (book the cableway ahead; go early, watch weather) + V&amp;A Waterfront evening."},
+    {date:"2026-09-03", txt:"Cape Town — open day", status:"todo", det:"Idea: Peninsula loop — Chapman's Peak → Cape Point → Boulders penguins → Kalk Bay."},
+    {date:"2026-09-04", txt:"Cape Town — open day", status:"todo", det:"Idea: Winelands — Stellenbosch/Franschhoek wine tram."},
+    {date:"2026-09-05", txt:"Cape Town — open day", status:"todo", det:"Idea: Hermanus whales (September is peak season), shark cage diving, or Lion's Head sunrise."},
+    {date:"2026-09-06", txt:"Last full day — open", status:"todo", det:"Kirstenbosch, Bo-Kaap, souvenirs. Keep it loose around whoever's flying."},
+  ],
+
+  noStayNeeded: ["2026-08-17","2026-09-07","2026-09-08"],
+
+  crew: [
+    {who:"E", role:"Via Hong Kong", legs:[
+      {r:"CX831 · JFK → HKG · Aug 17", m:"2:50 PM → 7:05 PM+1 · First 1A · 777-300ER"},
+      {r:"CX749 · HKG → JNB · Aug 19", m:"12:45 AM → 7:40 AM · Business 21A · A350"},
+      {r:"UA2222 · CPT → EWR · Sep 7", m:"7:50 PM → 5:05 AM Sep 8 · direct"},
+      {r:"JNB → WDH · Aug 19–20", m:"Needs booking", miss:true}]},
+    {who:"P", role:"Flies direct to Windhoek", legs:[
+      {r:"UA940 · EWR → LHR · Aug 17", m:"8:50 PM → 9:20 AM+1 · seat 3A"},
+      {r:"ET701 · LHR → ADD · Aug 18", m:"9:00 PM → 6:45 AM+1 · Ethiopian"},
+      {r:"ET835 · ADD → WDH · Aug 19", m:"8:35 AM → 1:20 PM · lands Windhoek"},
+      {r:"Return · ~Sep 6–7", m:"Needs booking", miss:true}]},
+    {who:"D", role:"Flights outstanding", legs:[
+      {r:"All flights unknown", m:"Needs: arrival by Aug 20 · JNB→WDH or direct WDH · return", miss:true}]},
+    {who:"M", role:"Arrives first · Aug 18", legs:[
+      {r:"DL200 · ATL → JNB · Aug 18", m:"Lands 7:40 PM · needs Aug 18 hotel"},
+      {r:"JNB → WDH · Aug 19–20", m:"Needs booking", miss:true},
+      {r:"Return · ~Sep 6–7", m:"Needs booking", miss:true}]},
+  ],
+
+  costs: [ {item:"Etosha Safari Camp (N$8,672)", by:"Ethan", usd:509.19} ],
+
+  missions: [
+    {p:"HIGH", t:"Book Daniel's flights", s:"US → Africa by Aug 20, plus return. Nothing on record."},
+    {p:"HIGH", t:"JNB → Windhoek: Ethan, Matt (+ Daniel)", s:"Aug 19–20. Airlink / FlySafair. Preston's covered."},
+    {p:"HIGH", t:"Pay Hilux deposit — Bos Otter", s:"N$6,900 (50%) secures it; balance due ~Aug 9. Preston has the quote."},
+    {p:"HIGH", t:"Cape Town accommodation", s:"Sep 1–6 · 4 guests · 5 nights."},
+    {p:"HIGH", t:"JNB → CPT flights", s:"Sep 1 afternoon, after the 2:30 PM group departure."},
+    {p:"MED", t:"Safari lodge Aug 23–24", s:"ugfl.com.na from the note, or Okonjima / Gondwana lodge."},
+    {p:"MED", t:"Windhoek hotels: Aug 19–21 + Aug 24", s:"Three unbooked Windhoek nights in total."},
+    {p:"MED", t:"Returns: Preston, Daniel, Matt", s:"Target Sep 6–7 from CPT. No direct UA on Sep 6."},
+    {p:"MED", t:"Matt's Aug 18 JNB hotel", s:"Lands 7:40 PM solo."},
+    {p:"MED", t:"Confirm WDH→JNB Aug 25 reference", s:"1:45 PM noted; no airline/reference on file."},
+    {p:"LOW", t:"Confirm Matt's DL200 details", s:"Departure time + baggage for the safari leg."},
+    {p:"LOW", t:"Passports: 6-month validity + 2 blank pages", s:"South Africa requires 2 blank pages; check all four."},
+    {p:"LOW", t:"Malaria check with a travel clinic", s:"Etosha is seasonal risk; late August is dry (low)."},
+  ],
+
+  ideas: [
+    {tag:"Namibia", h:"Desert Elephant Safari", p:"From the note — desertelephants.com. Damaraland's desert-adapted elephants; check drive time vs. Etosha."},
+    {tag:"Namibia", h:"UGFL Game Lodge", p:"ugfl.com.na — candidate for the Aug 23–24 lodge night."},
+    {tag:"Namibia", h:"Okonjima / AfriCat", p:"Cheetah and leopard tracking on the Windhoek–Etosha road. A natural Aug 20 or 24 stop."},
+    {tag:"Johannesburg", h:"Free afternoons", p:"Nelson Mandela Square · Apartheid Museum · Lion &amp; Safari Park · Cradle of Humankind."},
+    {tag:"Cape Town", h:"The classics", p:"Table Mountain cableway · Chapman's Peak → Cape Point → Boulders penguins · V&amp;A · Bo-Kaap."},
+    {tag:"Cape Town", h:"Day trips", p:"Stellenbosch/Franschhoek wine tram · Robben Island (book weeks out) · Kirstenbosch · Hermanus whales."},
+    {tag:"Cape Town", h:"Adventure", p:"Lion's Head sunrise · Signal Hill paragliding · shark cage diving · sea kayaking."},
+  ],
+
+  log: [
+    {d:"Jul 12", t:"Hilux 4x4 quote in from Bos Otter Rentals (Preston) — N$13,800, Aug 19–24, camping kit included. Deposit due to secure."},
+    {d:"Jul 12", t:"Redesign — day-by-day view with per-day booking status and details."},
+    {d:"Jul 12", t:"Site launched."},
+    {d:"Nov 13 '25", t:"Etosha Safari Camp booked & paid by Ethan — N$8,672 ($509.19)."},
+  ],
+};
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const D=iso=>new Date(iso+"T12:00:00");
+const iso=d=>d.toISOString().slice(0,10);
+const DOW=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const stBadge=s=>({ok:"Booked",gap:"Needs booking",todo:"To decide",info:"To confirm",na:"—"})[s];
+const dotHTML=w=>w?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${TRIP.travelers[w].color};margin-right:5px;position:relative;top:-1px"></span><b>${TRIP.travelers[w].name}</b><small> · </small>`:"";
+const ICONS={
+  stay:'<svg viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18"/><path d="M7 10V7a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>',
+  car:'<svg viewBox="0 0 24 24"><path d="M5 16l1.5-5.5A2 2 0 0 1 8.4 9h7.2a2 2 0 0 1 1.9 1.5L19 16"/><rect x="4" y="16" width="16" height="4" rx="1.5"/><circle cx="8" cy="20" r="1"/><circle cx="16" cy="20" r="1"/></svg>',
+  trav:'<svg viewBox="0 0 24 24"><path d="M10.5 13.5L4 11l1.5-1.5L11 10l4-4.5a1.4 1.4 0 0 1 2 2L12.5 12l.5 5.5L11.5 19l-2.5-6.5"/></svg>',
+  act:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>'
+};
+
+/* countdown */
+function tickCount(){
+  const d=new Date(TRIP.departISO)-new Date();
+  const cells=d>0?[[Math.floor(d/864e5),"days"],[Math.floor(d/36e5)%24,"hours"],[Math.floor(d/6e4)%60,"min"]]:[["✈","in progress"]];
+  $("#count").innerHTML=cells.map(c=>`<div class="cell"><div class="n">${c[0]}</div><div class="lbl">${c[1]}</div></div>`).join("");
+}
+tickCount(); setInterval(tickCount,30000);
+
+/* ================= DAYS ================= */
+function laneHTML(kind,item,date){
+  let arrL="",arrR="";
+  if(item.from&&item.to){
+    const lastNight = kind==="stay" ? iso(new Date(D(item.to)-864e5)) : item.to;
+    arrL = date>item.from ? `<span class="arr">◀</span>` : "";
+    arrR = date<lastNight ? `<span class="arr">▶</span>` : "";
+  }
+  const span = item.from&&item.to&&item.from!==item.to
+    ? `<small> · ${MO[D(item.from).getMonth()]} ${D(item.from).getDate()}–${MO[D(item.to).getMonth()]} ${D(item.to).getDate()}</small>` : "";
+  const time = item.time?`<small>${item.time} · </small>`:"";
+  return `<div class="lane"><div class="lane-row" onclick="this.parentNode.classList.toggle('open')">
+    <span class="ico">${ICONS[kind]}</span>${arrL}
+    <span class="txt">${dotHTML(item.who)}${time}${item.name||item.txt}${span}</span>${arrR}
+    <span class="st st-${item.status}">${stBadge(item.status)}</span>
+    <span class="caret">▶</span></div>
+    <div class="lane-det">${item.det||""}</div></div>`;
+}
+
+const dayStatus={};
+function buildDays(){
+  let html="", cur=D(TRIP.firstDay), end=D(TRIP.lastDay), lastPhase="";
+  while(cur<=end){
+    const date=iso(cur);
+    const ph=TRIP.phases.find(p=>date>=p.from&&date<=p.to)||TRIP.phases[0];
+    if(ph.id!==lastPhase){
+      if(ph.img)html+=`<img class="phase-img" src="${ph.img}" alt="${ph.tag}" loading="lazy">`;
+      lastPhase=ph.id;
+    }
+    const stays=TRIP.stays.filter(s=>date>=s.from&&date<s.to);
+    const cars=TRIP.cars.filter(c=>date>=c.from&&date<=c.to);
+    const trav=TRIP.travel.filter(t=>t.date===date);
+    const act=TRIP.activities.filter(a=>a.date===date);
+    let lanes="";
+    stays.forEach(s=>lanes+=laneHTML("stay",s,date));
+    if(!stays.length&&!TRIP.noStayNeeded.includes(date))
+      lanes+=`<div class="lane"><div class="lane-row"><span class="ico">${ICONS.stay}</span><span class="txt">No accommodation planned</span><span class="st st-gap">Missing</span></div></div>`;
+    cars.forEach(c=>lanes+=laneHTML("car",c,date));
+    trav.forEach(t=>lanes+=laneHTML("trav",t,date));
+    act.forEach(a=>lanes+=laneHTML("act",a,date));
+    const missing=[];
+    stays.forEach(s=>{if(s.status==="gap")missing.push("accommodation")});
+    if(!stays.length&&!TRIP.noStayNeeded.includes(date))missing.push("accommodation");
+    cars.forEach(c=>{if(c.status==="gap")missing.push("rental car")});
+    trav.forEach(t=>{if(t.status==="gap")missing.push("flights")});
+    const uniq=[...new Set(missing)];
+    dayStatus[date]={miss:uniq.length,color:ph.color};
+    const badge=uniq.length
+      ? `<span class="missbadge bad">${uniq.length} missing</span>`
+      : `<span class="missbadge good">All set</span>`;
+    const missline=uniq.length?`<div class="missline">Missing: ${uniq.join(" · ")}</div>`:"";
+    html+=`<div class="day" id="day-${date}" style="border-left:4px solid ${ph.color}">
+      <div class="day-top">
+        <div class="datebox"><div class="dn">${cur.getDate()}</div><div class="dm">${MO[cur.getMonth()]}</div></div>
+        <div><div class="dow">${DOW[cur.getDay()]}</div><div class="sub">${MO[cur.getMonth()]} ${cur.getDate()}, 2026</div></div>
+        ${badge}</div>
+      <div class="lanes">${lanes}${missline}</div></div>`;
+    cur=new Date(+cur+864e5);
+  }
+  $("#daysroot").innerHTML=html;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("vis");io.unobserve(e.target)}}),{threshold:.06});
+  document.querySelectorAll(".day").forEach(el=>io.observe(el));
+}
+buildDays();
+
+/* ================= CALENDAR ================= */
+function buildCalendar(){
+  const pad=n=>String(n).padStart(2,"0");
+  const months=[[2026,7,"August"],[2026,8,"September"]];
+  const wds=["S","M","T","W","T","F","S"];
+  $("#calroot").innerHTML=months.map(([y,m,label])=>{
+    const startDow=new Date(y,m,1).getDay(), dim=new Date(y,m+1,0).getDate();
+    let cells=wds.map(w=>`<div class="wd">${w}</div>`).join("");
+    for(let i=0;i<startDow;i++)cells+=`<div></div>`;
+    for(let d=1;d<=dim;d++){
+      const ds=`${y}-${pad(m+1)}-${pad(d)}`, st=dayStatus[ds];
+      cells += st
+        ? `<div class="cd trip" style="--pc:${st.color}" onclick="gotoDay('${ds}')">${d}<span class="dotm" style="background:${st.miss?"var(--bad)":"var(--ok)"}"></span></div>`
+        : `<div class="cd">${d}</div>`;
+    }
+    return `<div class="cal"><h3>${label} 2026</h3><div class="cal7">${cells}</div></div>`;
+  }).join("");
+}
+buildCalendar();
+function gotoDay(ds){
+  document.querySelector('.tabbtn[data-v="days"]').click();
+  setTimeout(()=>{
+    const el=document.getElementById("day-"+ds);
+    if(el){el.scrollIntoView({behavior:"smooth",block:"start"});
+      el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);}
+  },80);
+}
+
+/* ================= TODO ================= */
+const saved=JSON.parse(localStorage.getItem("afr26")||"{}");
+function renderMissions(){
+  $("#mlist").innerHTML=TRIP.missions.map((m,i)=>{
+    const done=!!saved[i];
+    const pc=m.p==="HIGH"?"st-gap":m.p==="MED"?"st-todo":"st-info";
+    return `<label class="mission${done?" done":""}"><input type="checkbox" data-i="${i}" ${done?"checked":""}>
+      <span><span class="mt">${m.t}</span><span class="ms">${m.s}</span></span>
+      <span class="st ${pc} mpri">${m.p}</span></label>`;
+  }).join("");
+  const n=TRIP.missions.filter((m,i)=>saved[i]).length, pct=Math.round(100*n/TRIP.missions.length);
+  $("#mpct").textContent=pct+"%";
+  $("#mcap").textContent=n+" of "+TRIP.missions.length+" complete";
+  $("#mbar").style.width=pct+"%";
+  $("#todocount").textContent=TRIP.missions.length-n;
+  document.querySelectorAll("#mlist input").forEach(cb=>cb.addEventListener("change",e=>{
+    saved[e.target.dataset.i]=e.target.checked;
+    localStorage.setItem("afr26",JSON.stringify(saved));
+    renderMissions();
+  }));
+}
+renderMissions();
+
+let inbox=JSON.parse(localStorage.getItem("afr26-inbox")||"[]");
+function renderInbox(){
+  $("#inbox").innerHTML=inbox.map((it,i)=>`<div class="inbox-item"><span class="type">${it.type}</span><span>${it.text}</span><button class="del" data-i="${i}" title="remove">✕</button></div>`).join("");
+  $("#inboxnote").style.display=inbox.length?"block":"none";
+  document.querySelectorAll("#inbox .del").forEach(b=>b.addEventListener("click",()=>{inbox.splice(+b.dataset.i,1);localStorage.setItem("afr26-inbox",JSON.stringify(inbox));renderInbox()}));
+}
+renderInbox();
+$("#addbtn").addEventListener("click",()=>{
+  const t=$("#addtext").value.trim(); if(!t)return;
+  inbox.push({type:$("#addtype").value,text:t.replace(/</g,"&lt;"),ts:Date.now()});
+  localStorage.setItem("afr26-inbox",JSON.stringify(inbox));
+  $("#addtext").value=""; renderInbox();
+});
+$("#addtext").addEventListener("keydown",e=>{if(e.key==="Enter")$("#addbtn").click()});
+$("#sharebtn").addEventListener("click",()=>{
+  const msg="Africa 2026 — new items from me:\n"+inbox.map(i=>`• [${i.type}] ${i.text}`).join("\n")+"\n(add to ecsmithavs.github.io/Africa26)";
+  if(navigator.share){navigator.share({text:msg}).catch(()=>{});}
+  else{window.open("https://wa.me/?text="+encodeURIComponent(msg));}
+});
+
+/* ================= INFO ================= */
+$("#crewgrid").innerHTML=TRIP.crew.map(c=>{
+  const tv=TRIP.travelers[c.who];
+  return `<div class="crew" style="--c:${tv.color}"><div class="nm"><i></i>${tv.name}</div><div class="role">${c.role}</div>
+  ${c.legs.map(l=>`<div class="leg${l.miss?" miss":""}"><div class="r">${l.r}</div><div class="m">${l.m}</div></div>`).join("")}</div>`;
+}).join("");
+const totalUsd=TRIP.costs.reduce((a,c)=>a+c.usd,0);
+$("#costtable").insertAdjacentHTML("beforeend",TRIP.costs.map(c=>`<tr><td>${c.item}</td><td>${c.by}</td><td class="num">$${c.usd.toFixed(2)}</td></tr>`).join(""));
+$("#owe").textContent="$"+(totalUsd/4).toFixed(2)+" each";
+$("#owesub").textContent="owed to Ethan (Preston · Daniel · Matt) — total shared spend $"+totalUsd.toFixed(2);
+$("#bento").innerHTML=TRIP.ideas.map(i=>`<div class="idea"><div class="tag">${i.tag}</div><h3>${i.h}</h3><p>${i.p}</p></div>`).join("");
+$("#loglist").innerHTML=TRIP.log.map(l=>`<li><span class="d">${l.d}</span><span class="t">${l.t}</span></li>`).join("");
+$("#updated").textContent="Last updated "+TRIP.updated;
+
+/* ================= TABS ================= */
+document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tabbtn").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  $("#v-"+b.dataset.v).classList.add("on");
+  document.documentElement.classList.toggle("snap",b.dataset.v==="days");
+  history.replaceState(null,"","#"+b.dataset.v);
+  window.scrollTo({top:0});
+}));
+document.documentElement.classList.add("snap");
+if(location.hash){const b=document.querySelector(`.tabbtn[data-v="${location.hash.slice(1)}"]`);if(b)b.click();}
+
+/* fast scrolling temporarily disables snap */
+(function(){
+  let lastY=window.scrollY,lastT=performance.now(),fast=0,timer;
+  window.addEventListener("scroll",()=>{
+    const onDays=document.querySelector(".tabbtn.on").dataset.v==="days";
+    if(!onDays)return;
+    const y=window.scrollY,t=performance.now();
+    const v=Math.abs(y-lastY)/Math.max(t-lastT,1); /* px per ms */
+    lastY=y;lastT=t;
+    if(v>2.5)fast++; else if(v<0.8)fast=Math.max(fast-1,0);
+    if(fast>=3)document.documentElement.classList.remove("snap");
+    clearTimeout(timer);
+    timer=setTimeout(()=>{fast=0;
+      if(document.querySelector(".tabbtn.on").dataset.v==="days")document.documentElement.classList.add("snap");
+    },800);
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
