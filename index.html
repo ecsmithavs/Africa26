@@ -189,6 +189,25 @@ tr:last-child td{border-bottom:none}
 .log .t{color:var(--dim)}
 footer{padding:44px 0 40px;text-align:center;color:var(--dim);font-size:.8rem;border-top:1px solid var(--line);margin-top:20px}
 footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
+
+/* ---------- MOBILE / TOUCH ---------- */
+*{-webkit-tap-highlight-color:transparent}
+button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
+@media(hover:none){
+  .cd.trip:hover{transform:none;border-color:var(--line2);border-top-color:var(--pc)}
+  .idea:hover{transform:none;box-shadow:var(--shadow)}
+  .lane-row:hover{background:transparent}
+  .tabbtn:not(.on):hover{background:transparent;color:var(--dim)}
+}
+@media(max-width:600px){
+  .tabbar .wrap{justify-content:flex-start}
+  .lane .txt{white-space:normal;line-height:1.35}
+  .lane-det{padding-left:14px}
+  .cal{padding:14px 10px}
+  .cal7{gap:3px}
+  .addrow select,.addrow input[type=text]{font-size:16px}
+  .day{scroll-margin-top:66px}
+}
 </style>
 </head>
 <body>
@@ -616,8 +635,15 @@ function buildCalendar(){
 buildCalendar();
 function gotoDay(ds){
   const el=document.getElementById("day-"+ds);
-  if(el){el.scrollIntoView({behavior:"smooth",block:"start"});
-    el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);}
+  if(!el)return;
+  /* snap fights programmatic smooth scroll on iOS — pause it while we travel */
+  const de=document.documentElement;
+  de.style.scrollSnapType="none";
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+  el.classList.add("flash");
+  setTimeout(()=>el.classList.remove("flash"),1800);
+  clearTimeout(gotoDay._t);
+  gotoDay._t=setTimeout(()=>{de.style.scrollSnapType=""},1400);
 }
 
 /* ================= TODO ================= */
