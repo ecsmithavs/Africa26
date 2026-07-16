@@ -260,7 +260,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
     <div class="bar"><i id="mbar"></i></div>
   </div>
   <div class="missions" id="mlist"></div>
-  <p class="notice">✕ hides an item on this device. Tell Ethan when something's done or obsolete and it comes off the site for everyone.</p>
+  <p class="notice" id="hidenote">✕ hides an item on this device. Tell Ethan when something's done or obsolete and it comes off the site for everyone.</p>
 </div>
 
 <!-- ============ INFO ============ -->
@@ -490,18 +490,7 @@ const TRIP = {
 
   costs: [ {item:"Etosha Safari Camp (N$8,672)", by:"Ethan", usd:509.19} ],
 
-  missions: [
-    {p:"HIGH", t:"Book Daniel's US flights", s:"Must land JNB by early Aug 19 (SA74 leaves 11:40 AM), plus return home. Domestic legs are booked."},
-    {p:"HIGH", t:"Pay Hilux deposit — Bos Otter", s:"N$6,900 (50%) secures it; balance due ~Aug 9. Preston has the quote."},
-    {p:"HIGH", t:"Cape Town accommodation", s:"Sep 1–6 · 4 guests · 5 nights."},
-    {p:"MED", t:"Safari lodge Aug 23–24", s:"ugfl.com.na from the note, or Okonjima / Gondwana lodge."},
-    {p:"MED", t:"Windhoek hotels: Aug 19–21 + Aug 24", s:"Three unbooked Windhoek nights in total."},
-    {p:"MED", t:"Returns: Preston, Daniel", s:"Target Sep 6–7 from CPT. No direct UA on Sep 6."},
-    {p:"MED", t:"Matt's Aug 18 JNB hotel", s:"Lands 7:40 PM solo."},
-    {p:"MED", t:"Ask Bos Otter to extend Hilux to Aug 25", s:"Flight out is 6:10 PM Aug 25; quote currently ends Aug 24."},
-    {p:"LOW", t:"Passports: 6-month validity + 2 blank pages", s:"South Africa requires 2 blank pages; check all four."},
-    {p:"LOW", t:"Malaria check with a travel clinic", s:"Etosha is seasonal risk; late August is dry (low)."},
-  ],
+  missions: [],
 
   ideas: [
     {tag:"Namibia", h:"Desert Elephant Safari", p:"From the note — desertelephants.com. Damaraland's desert-adapted elephants; check drive time vs. Etosha."},
@@ -653,10 +642,13 @@ function renderMissions(){
   }).join("");
   const vis=TRIP.missions.map((m,i)=>i).filter(i=>!hidden[i]);
   const n=vis.filter(i=>saved[i]).length, pct=vis.length?Math.round(100*n/vis.length):100;
+  document.querySelector(".mission-head").style.display=vis.length?"":"none";
+  $("#hidenote").style.display=vis.length?"":"none";
   $("#mpct").textContent=pct+"%";
   $("#mcap").textContent=n+" of "+vis.length+" complete";
   $("#mbar").style.width=pct+"%";
   $("#todocount").textContent=vis.length-n;
+  $("#todocount").style.display=(vis.length-n)?"":"none";
   document.querySelectorAll("#mlist input").forEach(cb=>cb.addEventListener("change",e=>{
     saved[e.target.dataset.i]=e.target.checked;
     localStorage.setItem("afr26",JSON.stringify(saved));
