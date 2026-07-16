@@ -137,6 +137,8 @@ h1 em{font-style:italic}
 .mission .mt{font-size:.9rem;font-weight:600}
 .mission .ms{color:var(--dim);font-size:.79rem;display:block;font-weight:400}
 .mpri{margin-left:auto;flex:0 0 auto}
+.mission .del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:.9rem;flex:0 0 auto;padding:0 2px}
+.mission .del:hover{color:var(--bad)}
 .addbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin:34px 0 14px;box-shadow:var(--shadow)}
 .addbox h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;margin-bottom:4px}
 .addbox p{color:var(--dim);font-size:.84rem;margin-bottom:16px}
@@ -242,14 +244,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 
 <!-- ============ TODO ============ -->
 <div class="view" id="v-todo">
-  <div class="mission-head">
-    <div class="pct" id="mpct"></div>
-    <div><div style="font-weight:600;font-size:.9rem">Planning progress</div><div class="cap" id="mcap"></div></div>
-    <div class="bar"><i id="mbar"></i></div>
-  </div>
-  <div class="missions" id="mlist"></div>
-
-  <div class="addbox">
+  <div class="addbox" style="margin:0 0 24px">
     <h3>Add a to-do or question</h3>
     <div class="addrow">
       <select id="addtype"><option>To-do</option><option>Question</option></select>
@@ -259,6 +254,13 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
     <div id="inbox" style="margin-top:16px"></div>
     <div class="notice" id="inboxnote" style="display:none">Saved on this device. <button class="btn ghost" id="sharebtn" style="padding:7px 16px;font-size:.78rem">Share with the group</button></div>
   </div>
+  <div class="mission-head">
+    <div class="pct" id="mpct"></div>
+    <div><div style="font-weight:600;font-size:.9rem">Planning progress</div><div class="cap" id="mcap"></div></div>
+    <div class="bar"><i id="mbar"></i></div>
+  </div>
+  <div class="missions" id="mlist"></div>
+  <p class="notice">✕ hides an item on this device. Tell Ethan when something's done or obsolete and it comes off the site for everyone.</p>
 </div>
 
 <!-- ============ INFO ============ -->
@@ -639,22 +641,31 @@ function gotoDay(ds){
 
 /* ================= TODO ================= */
 const saved=JSON.parse(localStorage.getItem("afr26")||"{}");
+const hidden=JSON.parse(localStorage.getItem("afr26-hide")||"{}");
 function renderMissions(){
   $("#mlist").innerHTML=TRIP.missions.map((m,i)=>{
+    if(hidden[i])return "";
     const done=!!saved[i];
     const pc=m.p==="HIGH"?"st-gap":m.p==="MED"?"st-todo":"st-info";
     return `<label class="mission${done?" done":""}"><input type="checkbox" data-i="${i}" ${done?"checked":""}>
       <span><span class="mt">${m.t}</span><span class="ms">${m.s}</span></span>
-      <span class="st ${pc} mpri">${m.p}</span></label>`;
+      <span class="st ${pc} mpri">${m.p}</span><button class="del" data-h="${i}" title="hide">✕</button></label>`;
   }).join("");
-  const n=TRIP.missions.filter((m,i)=>saved[i]).length, pct=Math.round(100*n/TRIP.missions.length);
+  const vis=TRIP.missions.map((m,i)=>i).filter(i=>!hidden[i]);
+  const n=vis.filter(i=>saved[i]).length, pct=vis.length?Math.round(100*n/vis.length):100;
   $("#mpct").textContent=pct+"%";
-  $("#mcap").textContent=n+" of "+TRIP.missions.length+" complete";
+  $("#mcap").textContent=n+" of "+vis.length+" complete";
   $("#mbar").style.width=pct+"%";
-  $("#todocount").textContent=TRIP.missions.length-n;
+  $("#todocount").textContent=vis.length-n;
   document.querySelectorAll("#mlist input").forEach(cb=>cb.addEventListener("change",e=>{
     saved[e.target.dataset.i]=e.target.checked;
     localStorage.setItem("afr26",JSON.stringify(saved));
+    renderMissions();
+  }));
+  document.querySelectorAll("#mlist .del").forEach(b=>b.addEventListener("click",e=>{
+    e.preventDefault();e.stopPropagation();
+    hidden[b.dataset.h]=true;
+    localStorage.setItem("afr26-hide",JSON.stringify(hidden));
     renderMissions();
   }));
 }
@@ -704,6 +715,19 @@ document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
   window.scrollTo({top:0});
 }));
 if(location.hash){const b=document.querySelector(`.tabbtn[data-v="${location.hash.slice(1)}"]`);if(b)b.click();}
+
+/* gentle settle between the landing photo and the calendar only — days scroll free */
+(function(){
+  let t;
+  window.addEventListener("scroll",()=>{
+    clearTimeout(t);
+    t=setTimeout(()=>{
+      const hh=document.querySelector("header").offsetHeight;
+      const y=window.scrollY;
+      if(y>60&&y<hh-60)window.scrollTo({top:y<hh/2?0:hh,behavior:"smooth"});
+    },160);
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
