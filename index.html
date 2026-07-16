@@ -149,7 +149,9 @@ h1 em{font-style:italic}
 .exrow:last-child{border-bottom:none}
 .exrow b{font-weight:600}
 .exrow .meta{color:var(--dim);font-size:.8rem}
-.exrow .del{margin-left:auto;background:none;border:none;color:var(--dim);cursor:pointer;flex:0 0 auto}
+.exrow .edit{margin-left:auto;background:none;border:none;color:var(--dim);cursor:pointer;flex:0 0 auto}
+.exrow .edit:hover{color:var(--espresso)}
+.exrow .del{background:none;border:none;color:var(--dim);cursor:pointer;flex:0 0 auto}
 .exrow .del:hover{color:var(--bad)}
 .settle-line{padding:7px 0;border-bottom:1px solid var(--line2)}
 .settle-line:last-child{border-bottom:none}
@@ -322,6 +324,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
     <div class="addrow" id="exsplit" style="margin-top:8px;display:none"></div>
     <div class="addrow" style="margin-top:10px">
       <button class="btn" id="exbtn">Add expense</button>
+      <button class="btn ghost" id="excancel" style="display:none">Cancel</button>
       <span class="notice" id="exstatus" style="align-self:center"></span>
     </div>
   </div>
@@ -902,7 +905,7 @@ function renderMoney(){
     const orig=e.currency&&e.currency!=="USD"?` <span class="meta">(${e.currency==="NAD"?"N$":"R"}${(+e.orig_amount).toFixed(2)})</span>`:"";
     return `<div class="exrow"><b>${esc(e.title)}</b><span>${esc(e.paid_by)} paid ${fmt(e.amount)}${orig}</span><span class="meta">${desc}</span>
       ${e.receipt_url?`<a href="${e.receipt_url}" target="_blank" rel="noopener">receipt</a>`:""}
-      ${e.seed?"":`<button class="del" data-id="${e.id}" title="delete">✕</button>`}</div>`;
+      ${e.seed?"":`<button class="edit" data-id="${e.id}" title="edit">✎</button><button class="del" data-id="${e.id}" title="delete">✕</button>`}</div>`;
   }).join("")||`<span class="notice">Nothing yet.</span>`;
   /* personal list, grouped */
   $("#perlist").innerHTML=NAMES.map(n=>{
@@ -913,9 +916,44 @@ function renderMoney(){
   }).join("")||`<span class="notice">Nothing yet.</span>`;
   document.querySelectorAll("#exlist .del").forEach(b=>b.addEventListener("click",async()=>{
     await fetch(EX+"?id=eq."+b.dataset.id,{method:"DELETE",headers:SBH}).catch(()=>{});
+    if(editId===b.dataset.id)resetExForm();
     loadExpenses();
   }));
+  document.querySelectorAll("#exlist .edit").forEach(b=>b.addEventListener("click",()=>{
+    const e=expenses.find(x=>x.id===b.dataset.id);
+    if(e)startEdit(e);
+  }));
 }
+let editId=null;
+function resetExForm(){
+  editId=null;
+  $("#extitle").value="";$("#examt").value="";$("#exfile").value="";
+  document.querySelectorAll("#exsplit input").forEach(i=>i.value="");
+  $("#exbtn").textContent="Add expense";
+  $("#excancel").style.display="none";
+  $("#exstatus").textContent="";
+}
+function startEdit(e){
+  editId=e.id;
+  const cur=e.currency||"USD", f=TRIP.fx[cur]||1;
+  $("#extitle").value=e.title;
+  $("#excur").value=cur;
+  $("#examt").value=(cur==="USD"?+e.amount:(+e.orig_amount||+e.amount/f)).toFixed(2);
+  $("#expayer").value=e.paid_by;
+  $("#exkind").value=e.kind||"shared";
+  $("#exmode").value=e.split?"custom":"equal";
+  syncMode();
+  if(e.split)document.querySelectorAll("#exsplit input").forEach(i=>{
+    const u=+e.split[i.dataset.n]||0;
+    i.value=(cur==="USD"?u:u/f).toFixed(2);
+  });
+  updLeft();
+  $("#exbtn").textContent="Save changes";
+  $("#excancel").style.display="";
+  $("#exstatus").textContent="Editing: "+e.title;
+  document.querySelector("#v-money .addbox").scrollIntoView({behavior:"smooth",block:"center"});
+}
+$("#excancel").addEventListener("click",resetExForm);
 $("#exbtn").addEventListener("click",async()=>{
   const st=$("#exstatus");
   const title=$("#extitle").value.trim(), raw=parseFloat($("#examt").value), cur=$("#excur").value;
@@ -928,7 +966,8 @@ $("#exbtn").addEventListener("click",async()=>{
     if(Math.abs(sum-raw)>0.05){st.textContent="Custom amounts must add up to the total.";return;}
   }
   st.textContent="Saving…";
-  let receipt_url=null;
+  const payload={title,amount:usd,currency:cur,orig_amount:cur==="USD"?null:raw,
+    paid_by:$("#expayer").value,kind:$("#exkind").value,split};
   const f=$("#exfile").files[0];
   try{
     if(f){
@@ -937,14 +976,15 @@ $("#exbtn").addEventListener("click",async()=>{
       const r=await fetch(`${STO}/object/receipts/${path}`,{method:"POST",
         headers:{apikey:SBK,Authorization:"Bearer "+SBK,"Content-Type":f.type||"application/octet-stream"},body:f});
       if(!r.ok)throw 0;
-      receipt_url=`${STO}/object/public/receipts/${path}`;
+      payload.receipt_url=`${STO}/object/public/receipts/${path}`;
     }
-    await fetch(EX,{method:"POST",headers:SBH,body:JSON.stringify({
-      title,amount:usd,currency:cur,orig_amount:cur==="USD"?null:raw,
-      paid_by:$("#expayer").value,kind:$("#exkind").value,split,receipt_url})});
-    $("#extitle").value="";$("#examt").value="";$("#exfile").value="";
-    document.querySelectorAll("#exsplit input").forEach(i=>i.value="");
-    st.textContent="Added ✓";setTimeout(()=>st.textContent="",2500);
+    if(editId){
+      await fetch(EX+"?id=eq."+editId,{method:"PATCH",headers:SBH,body:JSON.stringify(payload)});
+    }else{
+      await fetch(EX,{method:"POST",headers:SBH,body:JSON.stringify(payload)});
+    }
+    resetExForm();
+    st.textContent="Saved ✓";setTimeout(()=>{if(st.textContent==="Saved ✓")st.textContent=""},2500);
     loadExpenses();
   }catch(e){st.textContent="Save failed — try again.";}
 });
@@ -968,7 +1008,9 @@ document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
   b.classList.add("on");
   $("#v-"+b.dataset.v).classList.add("on");
   history.replaceState(null,"","#"+b.dataset.v);
-  window.scrollTo({top:0});
+  /* keep your place: land at the top of the content, not the top of the page */
+  const hh=document.querySelector("header").offsetHeight;
+  if(window.scrollY>hh)window.scrollTo({top:hh});
 }));
 if(location.hash){const b=document.querySelector(`.tabbtn[data-v="${location.hash.slice(1)}"]`);if(b)b.click();}
 
