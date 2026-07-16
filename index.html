@@ -187,7 +187,6 @@ h1 em{font-style:italic}
 .crew{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
 .crew .nm{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:600;font-size:1.2rem}
 .crew .nm i{width:10px;height:10px;border-radius:50%;background:var(--c)}
-.crew .role{color:var(--dim);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin:2px 0 12px}
 .leg{border-left:2px solid var(--line);padding:4px 0 4px 12px;margin:9px 0}
 .leg .r{font-weight:600;font-size:.87rem}
 .leg .m{color:var(--dim);font-size:.78rem}
@@ -203,15 +202,6 @@ td{padding:9px 7px;border-bottom:1px solid var(--line2);vertical-align:top}
 tr:last-child td{border-bottom:none}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .owe{font-family:'Fraunces',serif;font-weight:600;font-size:2rem;color:var(--espresso);line-height:1.1}
-.bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.idea{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:19px;transition:transform .22s,box-shadow .22s;box-shadow:var(--shadow)}
-.idea:hover{transform:translateY(-3px);box-shadow:0 6px 22px rgba(38,32,26,.09)}
-.idea .tag{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);font-weight:700;margin-bottom:7px}
-.idea h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;margin-bottom:5px}
-.idea p{color:var(--dim);font-size:.84rem}
-.log li{list-style:none;display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:.87rem}
-.log .d{color:var(--terra);font-weight:600;min-width:82px;font-size:.8rem;padding-top:2px}
-.log .t{color:var(--dim)}
 footer{padding:44px 0 40px;text-align:center;color:var(--dim);font-size:.8rem;border-top:1px solid var(--line);margin-top:20px}
 footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
 
@@ -220,7 +210,6 @@ footer .serif{font-size:1.15rem;color:var(--espresso);margin-bottom:6px}
 button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 @media(hover:none){
   .cd.trip:hover{transform:none;border-color:var(--line2);border-top-color:var(--pc)}
-  .idea:hover{transform:none;box-shadow:var(--shadow)}
   .lane-row:hover{background:transparent}
   .tabbtn:not(.on):hover{background:transparent;color:var(--dim)}
 }
@@ -248,7 +237,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
   <button class="tabbtn on" data-v="days">Day by Day</button>
   <button class="tabbtn" data-v="todo">To-Do <span class="b" id="todocount"></span></button>
   <button class="tabbtn" data-v="money">Money</button>
-  <button class="tabbtn" data-v="info">Crew</button>
+  <button class="tabbtn" data-v="info">Flights</button>
 </div></div>
 
 <main class="wrap">
@@ -343,12 +332,8 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 <!-- ============ INFO ============ -->
 <div class="view" id="v-info">
   <div class="sec">
-    <h2>The Crew</h2>
+    <h2>Flights</h2>
     <div class="crew-grid" id="crewgrid"></div>
-  </div>
-  <div class="sec">
-    <h2>Ideas</h2>
-    <div class="bento" id="bento"></div>
   </div>
   <div class="sec">
     <h2>Key Contacts</h2>
@@ -359,10 +344,6 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
         <li>Convention venue: Gallagher Convention Centre, 19 Richards Drive, Midrand</li>
       </ul>
     </div>
-  </div>
-  <div class="sec">
-    <h2>Updates</h2>
-    <ul class="log" id="loglist"></ul>
   </div>
 </div>
 
@@ -532,24 +513,24 @@ const TRIP = {
   },
 
   crew: [
-    {who:"E", role:"Via Hong Kong", legs:[
+    {who:"E", legs:[
       {r:"CX831 · JFK → HKG · Aug 17", m:"2:50 PM → 7:05 PM+1 · First 1A · 777-300ER"},
       {r:"CX749 · HKG → JNB · Aug 19", m:"12:45 AM → 7:40 AM · Business 21A · A350"},
       {r:"SA74 / SA77 · JNB ↔ WDH", m:"Aug 19, 11:40 AM out · Aug 25, 6:10 PM back"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM · seat 8C"},
       {r:"UA2222 · CPT → EWR · Sep 7", m:"7:50 PM → 5:05 AM Sep 8 · direct"}]},
-    {who:"P", role:"Flies direct to Windhoek", legs:[
+    {who:"P", legs:[
       {r:"UA940 · EWR → LHR · Aug 17", m:"8:50 PM → 9:20 AM+1 · seat 3A"},
       {r:"ET701 · LHR → ADD · Aug 18", m:"9:00 PM → 6:45 AM+1 · Ethiopian"},
       {r:"ET835 · ADD → WDH · Aug 19", m:"8:35 AM → 1:20 PM · lands Windhoek"},
       {r:"SA77 · WDH → JNB · Aug 25", m:"6:10 PM → 7:55 PM"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
       {r:"QR · CPT → DOH → JFK · Sep 6", m:"7:30 PM → 10:30 PM Sep 7 · 9h30m Doha layover"}]},
-    {who:"D", role:"Domestic legs booked", legs:[
+    {who:"D", legs:[
       {r:"SA74 / SA77 · JNB ↔ WDH", m:"Aug 19, 11:40 AM out · Aug 25, 6:10 PM back"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
       {r:"US → JNB + return home", m:"Unknown — must land JNB by early Aug 19", miss:true}]},
-    {who:"M", role:"Arrives first · Aug 18", legs:[
+    {who:"M", legs:[
       {r:"DL2104 + DL200 · AUS → JNB · Aug 17", m:"2:45 PM via Atlanta → lands 7:40 PM Aug 18 · Comfort Extra"},
       {r:"SA74 / SA77 · JNB ↔ WDH", m:"Aug 19, 11:40 AM out · Aug 25, 6:10 PM back"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
@@ -558,16 +539,7 @@ const TRIP = {
 
   costs: [], /* legacy seeds — real expenses live in the shared database */
 
-  ideas: [
-    {tag:"Namibia", h:"Desert Elephant Safari", p:"From the note — desertelephants.com. Damaraland's desert-adapted elephants; check drive time vs. Etosha."},
-    {tag:"Namibia", h:"UGFL Game Lodge", p:"ugfl.com.na — candidate for the Aug 23–24 lodge night."},
-    {tag:"Namibia", h:"Okonjima / AfriCat", p:"Cheetah and leopard tracking on the Windhoek–Etosha road. A natural Aug 20 or 24 stop."},
-    {tag:"Johannesburg", h:"Free afternoons", p:"Nelson Mandela Square · Apartheid Museum · Lion &amp; Safari Park · Cradle of Humankind."},
-    {tag:"Cape Town", h:"The classics", p:"Table Mountain cableway · Chapman's Peak → Cape Point → Boulders penguins · V&amp;A · Bo-Kaap."},
-    {tag:"Cape Town", h:"Day trips", p:"Stellenbosch/Franschhoek wine tram · Robben Island (book weeks out) · Kirstenbosch · Hermanus whales."},
-    {tag:"Cape Town", h:"Adventure", p:"Lion's Head sunrise · Signal Hill paragliding · shark cage diving · sea kayaking."},
-  ],
-
+  /* internal history — written by the overnight pass, not displayed */
   log: [
     {d:"Jul 16", t:"Preston's flight home booked — Qatar Airways, Cape Town → Doha → JFK, departing 7:30 PM Sep 6, landing 10:30 PM Sep 7."},
     {d:"Jul 16", t:"SAA flights booked: JNB→Windhoek Aug 19 (Ethan, Daniel, Matt) + Windhoek→JNB Aug 25 all four — now 6:10 PM, not 1:45. And JNB→Cape Town Sep 1, 9:25 AM, all four."},
@@ -998,11 +970,9 @@ setInterval(loadExpenses,30000);
 /* ================= INFO ================= */
 $("#crewgrid").innerHTML=TRIP.crew.map(c=>{
   const tv=TRIP.travelers[c.who];
-  return `<div class="crew" style="--c:${tv.color}"><div class="nm"><i></i>${tv.name}</div><div class="role">${c.role}</div>
+  return `<div class="crew" style="--c:${tv.color}"><div class="nm" style="margin-bottom:12px"><i></i>${tv.name}</div>
   ${c.legs.map(l=>`<div class="leg${l.miss?" miss":""}"><div class="r">${l.r}</div><div class="m">${l.m}</div></div>`).join("")}</div>`;
 }).join("");
-$("#bento").innerHTML=TRIP.ideas.map(i=>`<div class="idea"><div class="tag">${i.tag}</div><h3>${i.h}</h3><p>${i.p}</p></div>`).join("");
-$("#loglist").innerHTML=TRIP.log.map(l=>`<li><span class="d">${l.d}</span><span class="t">${l.t}</span></li>`).join("");
 $("#updated").textContent="Last updated "+TRIP.updated;
 
 /* ================= TABS ================= */
