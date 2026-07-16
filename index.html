@@ -139,6 +139,14 @@ h1 em{font-style:italic}
 .mpri{margin-left:auto;flex:0 0 auto}
 .mission .del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:.9rem;flex:0 0 auto;padding:0 2px}
 .mission .del:hover{color:var(--bad)}
+/* day notes */
+.dnote{display:flex;gap:8px;align-items:baseline;background:var(--infobg);border-radius:10px;padding:8px 12px;margin:5px 2px;font-size:.85rem}
+.dnote small{color:var(--dim);white-space:nowrap}
+.dnote .del{margin-left:auto;background:none;border:none;color:var(--dim);cursor:pointer;flex:0 0 auto}
+.notebtn{background:none;border:none;color:var(--dim);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer;padding:7px 10px 2px}
+.notebtn:hover{color:var(--terra)}
+.noteform{display:flex;gap:8px;margin:6px 2px}
+.noteform input{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;font-size:16px;min-width:0}
 .addbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin:34px 0 14px;box-shadow:var(--shadow)}
 .addbox h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;margin-bottom:4px}
 .addbox p{color:var(--dim);font-size:.84rem;margin-bottom:16px}
@@ -318,6 +326,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 ================================================================ */
 const TRIP = {
   updated: "July 16, 2026",
+  notesCutoff: "", /* notes created before this ISO timestamp are hidden (already folded into the itinerary) */
   departISO: "2026-08-17T14:50:00-04:00",
   firstDay: "2026-08-17", lastDay: "2026-09-08",
 
@@ -590,7 +599,7 @@ function buildDays(){
         <div class="datebox"><div class="dn">${cur.getDate()}</div><div class="dm">${MO[cur.getMonth()]}</div></div>
         <div style="min-width:0"><div class="dow">${DOW[cur.getDay()]}</div><div class="blurb">${TRIP.blurbs[date]||""}</div></div>
         ${badge}</div>
-      <div class="lanes">${lanes}</div></div></div>`;
+      <div class="lanes">${lanes}<div class="dnotes" data-date="${date}"></div><button class="notebtn" data-date="${date}">+ Add note</button></div></div></div>`;
     cur=new Date(+cur+864e5);
   }
   $("#daysroot").innerHTML=html;
@@ -681,7 +690,45 @@ $("#addbtn").addEventListener("click",async()=>{
 $("#addtext").addEventListener("keydown",e=>{if(e.key==="Enter")$("#addbtn").click()});
 loadTodos();
 setInterval(loadTodos,20000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadTodos()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadTodos();loadNotes();}});
+
+/* ================= DAY NOTES — shared, folded into the itinerary by the nightly cleanup ================= */
+const NB="https://gzacosjxjqadkpoohlwf.supabase.co/rest/v1/day_notes";
+let dayNotes=[];
+async function loadNotes(){
+  try{
+    const r=await fetch(NB+"?select=*&order=created_at.asc",{headers:SBH});
+    if(!r.ok)throw 0;
+    dayNotes=await r.json();
+  }catch(e){}
+  renderNotes();
+}
+function renderNotes(){
+  document.querySelectorAll(".dnotes").forEach(el=>{
+    const ns=dayNotes.filter(n=>n.date===el.dataset.date&&n.created_at>(TRIP.notesCutoff||""));
+    el.innerHTML=ns.map(n=>`<div class="dnote" data-id="${n.id}"><span>📝 ${esc(n.text)}</span><small>— ${esc(n.author||"")}</small><button class="del" title="delete">✕</button></div>`).join("");
+    el.querySelectorAll(".dnote").forEach(d=>d.querySelector(".del").addEventListener("click",async()=>{
+      await fetch(NB+"?id=eq."+d.dataset.id,{method:"DELETE",headers:SBH}).catch(()=>{});
+      loadNotes();
+    }));
+  });
+}
+document.querySelectorAll(".notebtn").forEach(b=>b.addEventListener("click",()=>{
+  if(b.nextElementSibling&&b.nextElementSibling.classList.contains("noteform"))return b.nextElementSibling.querySelector("input").focus();
+  const f=document.createElement("div");
+  f.className="noteform";
+  f.innerHTML=`<input type="text" maxlength="220" placeholder="e.g. Booked dinner at Joe's Beerhouse, 7 PM"><button class="btn">Save</button>`;
+  b.after(f);
+  const inp=f.querySelector("input");inp.focus();
+  f.querySelector("button").addEventListener("click",async()=>{
+    const t=inp.value.trim();if(!t)return;
+    await fetch(NB,{method:"POST",headers:SBH,body:JSON.stringify({date:b.dataset.date,text:t,author:localStorage.getItem("afr26-me")||"Someone"})}).catch(()=>{});
+    f.remove();loadNotes();
+  });
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")f.querySelector("button").click()});
+}));
+loadNotes();
+setInterval(loadNotes,30000);
 
 /* ================= INFO ================= */
 $("#crewgrid").innerHTML=TRIP.crew.map(c=>{
