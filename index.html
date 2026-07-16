@@ -262,6 +262,17 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
     </div>
     <p class="notice">Shared list — adds, checks and deletes show up for everyone.</p>
   </div>
+  <div class="addbox" style="margin:0 0 24px">
+    <h3>Upload a booking</h3>
+    <div class="addrow">
+      <input type="file" id="upfile" accept="image/*,.pdf" style="flex:1;min-width:180px;color:var(--dim);font-size:.85rem;padding:9px 0">
+      <input type="text" id="upcap" maxlength="140" placeholder="What is it? e.g. Windhoek hotel, Aug 19–21">
+      <button class="btn" id="upbtn">Upload</button>
+    </div>
+    <div id="upstatus" class="notice" style="display:none"></div>
+    <div id="uplist" style="margin-top:12px"></div>
+    <p class="notice">Screenshot or PDF of any confirmation. Queued uploads get read and folded into the itinerary on the overnight pass.</p>
+  </div>
   <div class="mission-head">
     <div class="pct" id="mpct"></div>
     <div><div style="font-weight:600;font-size:.9rem">Progress</div><div class="cap" id="mcap"></div></div>
@@ -327,6 +338,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 const TRIP = {
   updated: "July 16, 2026",
   notesCutoff: "", /* notes created before this ISO timestamp are hidden (already folded into the itinerary) */
+  inboxCutoff: "", /* booking uploads before this ISO timestamp have been processed */
   departISO: "2026-08-17T14:50:00-04:00",
   firstDay: "2026-08-17", lastDay: "2026-09-08",
 
@@ -729,6 +741,41 @@ document.querySelectorAll(".notebtn").forEach(b=>b.addEventListener("click",()=>
 }));
 loadNotes();
 setInterval(loadNotes,30000);
+
+/* ================= BOOKING INBOX — uploads processed on the overnight pass ================= */
+const BI="https://gzacosjxjqadkpoohlwf.supabase.co/rest/v1/booking_inbox";
+const STO="https://gzacosjxjqadkpoohlwf.supabase.co/storage/v1";
+async function loadInbox(){
+  try{
+    const r=await fetch(BI+"?select=*&order=created_at.desc",{headers:SBH});
+    if(!r.ok)throw 0;
+    const rows=await r.json();
+    const pend=rows.filter(x=>x.created_at>(TRIP.inboxCutoff||""));
+    $("#uplist").innerHTML=pend.map(x=>`<div class="inbox-item"><span class="type">Queued</span><span><a href="${x.url}" target="_blank" rel="noopener">${esc(x.caption||"booking upload")}</a>${x.author?" — "+esc(x.author):""}</span></div>`).join("");
+  }catch(e){}
+}
+$("#upbtn").addEventListener("click",async()=>{
+  const f=$("#upfile").files[0];
+  const st=$("#upstatus");st.style.display="block";
+  if(!f){st.textContent="Choose a file first.";return;}
+  if(f.size>15e6){st.textContent="File too big — keep it under 15 MB.";return;}
+  st.textContent="Uploading…";
+  try{
+    const path=Date.now()+"-"+f.name.replace(/[^a-zA-Z0-9._-]/g,"");
+    const r=await fetch(`${STO}/object/bookings/${path}`,{method:"POST",
+      headers:{apikey:SBK,Authorization:"Bearer "+SBK,"Content-Type":f.type||"application/octet-stream"},body:f});
+    if(!r.ok)throw 0;
+    await fetch(BI,{method:"POST",headers:SBH,body:JSON.stringify({
+      url:`${STO}/object/public/bookings/${path}`,
+      caption:$("#upcap").value.trim(),
+      author:localStorage.getItem("afr26-me")||"Someone"})});
+    $("#upfile").value="";$("#upcap").value="";
+    st.textContent="Uploaded ✓ — it'll be folded into the itinerary overnight.";
+    loadInbox();
+  }catch(e){st.textContent="Upload failed — try again.";}
+});
+loadInbox();
+setInterval(loadInbox,60000);
 
 /* ================= INFO ================= */
 $("#crewgrid").innerHTML=TRIP.crew.map(c=>{
