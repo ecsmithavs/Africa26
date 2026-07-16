@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --bg:#f6f2ea; --card:#fffdf9; --card2:#faf6ee; --line:#e6ddcd; --line2:#efe8da;
@@ -290,7 +291,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
     </div>
     <div id="upstatus" class="notice" style="display:none"></div>
     <div id="uplist" style="margin-top:12px"></div>
-    <p class="notice">Screenshot or PDF of any confirmation. Queued uploads get read and folded into the itinerary on the overnight pass.</p>
+    <p class="notice">Screenshot or PDF of any confirmation. Claude reads new uploads <b>each night at 5 AM</b> and updates the site — check back in the morning.</p>
   </div>
   <div class="mission-head">
     <div class="pct" id="mpct"></div>
@@ -1016,6 +1017,19 @@ document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
   if(window.scrollY>hh)window.scrollTo({top:hh});
 }));
 if(location.hash){const b=document.querySelector(`.tabbtn[data-v="${location.hash.slice(1)}"]`);if(b)b.click();}
+
+/* ================= REALTIME — instant updates across devices ================= */
+if(window.supabase){
+  try{
+    const sbc=window.supabase.createClient("https://gzacosjxjqadkpoohlwf.supabase.co",SBK);
+    sbc.channel("live")
+      .on("postgres_changes",{event:"*",schema:"public",table:"expenses"},()=>loadExpenses())
+      .on("postgres_changes",{event:"*",schema:"public",table:"todos"},()=>loadTodos())
+      .on("postgres_changes",{event:"*",schema:"public",table:"day_notes"},()=>loadNotes())
+      .on("postgres_changes",{event:"*",schema:"public",table:"booking_inbox"},()=>loadInbox())
+      .subscribe();
+  }catch(e){}
+}
 </script>
 </body>
 </html>
