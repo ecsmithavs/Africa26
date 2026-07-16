@@ -248,19 +248,19 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
     <h3>Add a to-do or question</h3>
     <div class="addrow">
       <select id="addtype"><option>To-do</option><option>Question</option></select>
+      <select id="addwho"><option>Ethan</option><option>Preston</option><option>Daniel</option><option>Matt</option></select>
       <input type="text" id="addtext" maxlength="200" placeholder="e.g. Book airport transfer · Does anyone have a GoPro?">
       <button class="btn" id="addbtn">Add</button>
     </div>
-    <div id="inbox" style="margin-top:16px"></div>
-    <div class="notice" id="inboxnote" style="display:none">Saved on this device. <button class="btn ghost" id="sharebtn" style="padding:7px 16px;font-size:.78rem">Share with the group</button></div>
+    <p class="notice">Shared list — adds, checks and deletes show up for everyone.</p>
   </div>
   <div class="mission-head">
     <div class="pct" id="mpct"></div>
-    <div><div style="font-weight:600;font-size:.9rem">Planning progress</div><div class="cap" id="mcap"></div></div>
+    <div><div style="font-weight:600;font-size:.9rem">Progress</div><div class="cap" id="mcap"></div></div>
     <div class="bar"><i id="mbar"></i></div>
   </div>
   <div class="missions" id="mlist"></div>
-  <p class="notice" id="hidenote">✕ hides an item on this device. Tell Ethan when something's done or obsolete and it comes off the site for everyone.</p>
+  <p class="notice" id="syncerr" style="display:none;color:var(--bad)">Can't reach the shared list right now — changes won't save.</p>
 </div>
 
 <!-- ============ INFO ============ -->
@@ -490,8 +490,6 @@ const TRIP = {
 
   costs: [ {item:"Etosha Safari Camp (N$8,672)", by:"Ethan", usd:509.19} ],
 
-  missions: [],
-
   ideas: [
     {tag:"Namibia", h:"Desert Elephant Safari", p:"From the note — desertelephants.com. Damaraland's desert-adapted elephants; check drive time vs. Etosha."},
     {tag:"Namibia", h:"UGFL Game Lodge", p:"ugfl.com.na — candidate for the Aug 23–24 lodge night."},
@@ -628,60 +626,62 @@ function gotoDay(ds){
   setTimeout(()=>el.classList.remove("flash"),1800);
 }
 
-/* ================= TODO ================= */
-const saved=JSON.parse(localStorage.getItem("afr26")||"{}");
-const hidden=JSON.parse(localStorage.getItem("afr26-hide")||"{}");
-function renderMissions(){
-  $("#mlist").innerHTML=TRIP.missions.map((m,i)=>{
-    if(hidden[i])return "";
-    const done=!!saved[i];
-    const pc=m.p==="HIGH"?"st-gap":m.p==="MED"?"st-todo":"st-info";
-    return `<label class="mission${done?" done":""}"><input type="checkbox" data-i="${i}" ${done?"checked":""}>
-      <span><span class="mt">${m.t}</span><span class="ms">${m.s}</span></span>
-      <span class="st ${pc} mpri">${m.p}</span><button class="del" data-h="${i}" title="hide">✕</button></label>`;
-  }).join("");
-  const vis=TRIP.missions.map((m,i)=>i).filter(i=>!hidden[i]);
-  const n=vis.filter(i=>saved[i]).length, pct=vis.length?Math.round(100*n/vis.length):100;
-  document.querySelector(".mission-head").style.display=vis.length?"":"none";
-  $("#hidenote").style.display=vis.length?"":"none";
+/* ================= TODO — shared live list (Supabase) ================= */
+const SB="https://gzacosjxjqadkpoohlwf.supabase.co/rest/v1/todos";
+const SBK="sb_publishable_oCeGo93aZLHmMDFd4kMjZw_zkHoBhkd";
+const SBH={apikey:SBK,Authorization:"Bearer "+SBK,"Content-Type":"application/json",Prefer:"return=minimal"};
+const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+let todos=[];
+async function loadTodos(){
+  try{
+    const r=await fetch(SB+"?select=*&order=created_at.asc",{headers:SBH});
+    if(!r.ok)throw 0;
+    todos=await r.json();
+    $("#syncerr").style.display="none";
+  }catch(e){$("#syncerr").style.display="block";}
+  renderTodos();
+}
+function renderTodos(){
+  const open=todos.filter(t=>!t.done),done=todos.filter(t=>t.done);
+  $("#mlist").innerHTML=[...open,...done].map(t=>`
+    <label class="mission${t.done?" done":""}" data-id="${t.id}">
+      <input type="checkbox" ${t.done?"checked":""}>
+      <span><span class="mt">${esc(t.text)}</span><span class="ms">${esc(t.type||"To-do")}${t.author?" · "+esc(t.author):""}</span></span>
+      <span class="st ${t.type==="Question"?"st-info":"st-todo"} mpri">${t.type==="Question"?"?":"TO-DO"}</span>
+      <button class="del" title="delete">✕</button>
+    </label>`).join("")||`<p class="notice">Nothing here yet — add the first one.</p>`;
+  const pct=todos.length?Math.round(100*done.length/todos.length):0;
+  document.querySelector(".mission-head").style.display=todos.length?"":"none";
   $("#mpct").textContent=pct+"%";
-  $("#mcap").textContent=n+" of "+vis.length+" complete";
+  $("#mcap").textContent=done.length+" of "+todos.length+" done";
   $("#mbar").style.width=pct+"%";
-  $("#todocount").textContent=vis.length-n;
-  $("#todocount").style.display=(vis.length-n)?"":"none";
-  document.querySelectorAll("#mlist input").forEach(cb=>cb.addEventListener("change",e=>{
-    saved[e.target.dataset.i]=e.target.checked;
-    localStorage.setItem("afr26",JSON.stringify(saved));
-    renderMissions();
-  }));
-  document.querySelectorAll("#mlist .del").forEach(b=>b.addEventListener("click",e=>{
-    e.preventDefault();e.stopPropagation();
-    hidden[b.dataset.h]=true;
-    localStorage.setItem("afr26-hide",JSON.stringify(hidden));
-    renderMissions();
-  }));
+  $("#todocount").textContent=open.length;
+  $("#todocount").style.display=open.length?"":"none";
+  document.querySelectorAll("#mlist .mission").forEach(el=>{
+    const id=el.dataset.id;
+    el.querySelector("input").addEventListener("change",async e=>{
+      await fetch(SB+"?id=eq."+id,{method:"PATCH",headers:SBH,body:JSON.stringify({done:e.target.checked})}).catch(()=>{});
+      loadTodos();
+    });
+    el.querySelector(".del").addEventListener("click",async e=>{
+      e.preventDefault();e.stopPropagation();
+      await fetch(SB+"?id=eq."+id,{method:"DELETE",headers:SBH}).catch(()=>{});
+      loadTodos();
+    });
+  });
 }
-renderMissions();
-
-let inbox=JSON.parse(localStorage.getItem("afr26-inbox")||"[]");
-function renderInbox(){
-  $("#inbox").innerHTML=inbox.map((it,i)=>`<div class="inbox-item"><span class="type">${it.type}</span><span>${it.text}</span><button class="del" data-i="${i}" title="remove">✕</button></div>`).join("");
-  $("#inboxnote").style.display=inbox.length?"block":"none";
-  document.querySelectorAll("#inbox .del").forEach(b=>b.addEventListener("click",()=>{inbox.splice(+b.dataset.i,1);localStorage.setItem("afr26-inbox",JSON.stringify(inbox));renderInbox()}));
-}
-renderInbox();
-$("#addbtn").addEventListener("click",()=>{
+$("#addwho").value=localStorage.getItem("afr26-me")||"Ethan";
+$("#addwho").addEventListener("change",()=>localStorage.setItem("afr26-me",$("#addwho").value));
+$("#addbtn").addEventListener("click",async()=>{
   const t=$("#addtext").value.trim(); if(!t)return;
-  inbox.push({type:$("#addtype").value,text:t.replace(/</g,"&lt;"),ts:Date.now()});
-  localStorage.setItem("afr26-inbox",JSON.stringify(inbox));
-  $("#addtext").value=""; renderInbox();
+  $("#addtext").value="";
+  await fetch(SB,{method:"POST",headers:SBH,body:JSON.stringify({text:t,type:$("#addtype").value,author:$("#addwho").value})}).catch(()=>{});
+  loadTodos();
 });
 $("#addtext").addEventListener("keydown",e=>{if(e.key==="Enter")$("#addbtn").click()});
-$("#sharebtn").addEventListener("click",()=>{
-  const msg="Africa 2026 — new items from me:\n"+inbox.map(i=>`• [${i.type}] ${i.text}`).join("\n")+"\n(add to ecsmithavs.github.io/Africa26)";
-  if(navigator.share){navigator.share({text:msg}).catch(()=>{});}
-  else{window.open("https://wa.me/?text="+encodeURIComponent(msg));}
-});
+loadTodos();
+setInterval(loadTodos,20000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadTodos()});
 
 /* ================= INFO ================= */
 $("#crewgrid").innerHTML=TRIP.crew.map(c=>{
