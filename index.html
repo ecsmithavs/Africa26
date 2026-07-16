@@ -139,6 +139,22 @@ h1 em{font-style:italic}
 .mpri{margin-left:auto;flex:0 0 auto}
 .mission .del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:.9rem;flex:0 0 auto;padding:0 2px}
 .mission .del:hover{color:var(--bad)}
+/* money */
+.balgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.bal{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);border-top:4px solid var(--c)}
+.bal .nm{font-weight:600;font-size:.9rem}
+.bal .amt{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:600;line-height:1.2}
+.bal .lbl{font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.exrow{display:flex;gap:8px 14px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line2);font-size:.9rem;flex-wrap:wrap}
+.exrow:last-child{border-bottom:none}
+.exrow b{font-weight:600}
+.exrow .meta{color:var(--dim);font-size:.8rem}
+.exrow .del{margin-left:auto;background:none;border:none;color:var(--dim);cursor:pointer;flex:0 0 auto}
+.exrow .del:hover{color:var(--bad)}
+.settle-line{padding:7px 0;border-bottom:1px solid var(--line2)}
+.settle-line:last-child{border-bottom:none}
+.splitin{display:flex;flex-direction:column;font-size:.7rem;color:var(--dim);flex:1;min-width:74px;font-weight:600}
+.splitin input{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:16px;margin-top:3px;width:100%}
 /* day notes */
 .dnote{display:flex;gap:8px;align-items:baseline;background:var(--infobg);border-radius:10px;padding:8px 12px;margin:5px 2px;font-size:.85rem}
 .dnote small{color:var(--dim);white-space:nowrap}
@@ -228,7 +244,8 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 <div class="tabbar"><div class="wrap">
   <button class="tabbtn on" data-v="days">Day by Day</button>
   <button class="tabbtn" data-v="todo">To-Do <span class="b" id="todocount"></span></button>
-  <button class="tabbtn" data-v="info">Crew &amp; Money</button>
+  <button class="tabbtn" data-v="money">Money</button>
+  <button class="tabbtn" data-v="info">Crew</button>
 </div></div>
 
 <main class="wrap">
@@ -282,25 +299,48 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
   <p class="notice" id="syncerr" style="display:none;color:var(--bad)">Can't reach the shared list right now — changes won't save.</p>
 </div>
 
+<!-- ============ MONEY ============ -->
+<div class="view" id="v-money">
+  <div class="balgrid" id="balances"></div>
+  <div class="panel" style="margin-bottom:18px">
+    <h3>Settle up</h3>
+    <div id="settle" style="font-size:.95rem"></div>
+  </div>
+  <div class="addbox" style="margin:0 0 18px">
+    <h3>Add an expense</h3>
+    <div class="addrow">
+      <input type="text" id="extitle" maxlength="120" placeholder="What was it? e.g. Groceries in Windhoek" style="flex:2;min-width:170px">
+      <input type="number" id="examt" placeholder="Amount" step="0.01" min="0" style="width:120px;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;font:inherit">
+      <select id="excur"><option value="USD">$ USD</option><option value="NAD">N$ NAD</option><option value="ZAR">R ZAR</option></select>
+    </div>
+    <div class="addrow" style="margin-top:8px">
+      <select id="expayer"></select>
+      <select id="exkind"><option value="shared">Shared — split it</option><option value="personal">Personal — just tracking</option></select>
+      <select id="exmode"><option value="equal">Split equally</option><option value="custom">Custom amounts</option></select>
+      <input type="file" id="exfile" accept="image/*,.pdf" title="Receipt (optional)" style="flex:1;min-width:150px;color:var(--dim);font-size:.82rem;padding:10px 0">
+    </div>
+    <div class="addrow" id="exsplit" style="margin-top:8px;display:none"></div>
+    <div class="addrow" style="margin-top:10px">
+      <button class="btn" id="exbtn">Add expense</button>
+      <span class="notice" id="exstatus" style="align-self:center"></span>
+    </div>
+  </div>
+  <div class="panel" style="margin-bottom:14px">
+    <h3>Shared expenses</h3>
+    <div id="exlist"></div>
+  </div>
+  <div class="panel">
+    <h3>Personal spending</h3>
+    <div id="perlist"></div>
+  </div>
+  <p class="notice">Amounts in N$ / R convert at ≈ rates for the tally; the overnight pass checks receipts and trues things up.</p>
+</div>
+
 <!-- ============ INFO ============ -->
 <div class="view" id="v-info">
   <div class="sec">
     <h2>The Crew</h2>
     <div class="crew-grid" id="crewgrid"></div>
-  </div>
-  <div class="sec">
-    <h2>Money</h2>
-    <div class="money-grid">
-      <div class="panel">
-        <h3>Split so far</h3>
-        <div class="owe" id="owe"></div>
-        <div style="color:var(--dim);font-size:.84rem;margin-top:6px" id="owesub"></div>
-      </div>
-      <div class="panel">
-        <h3>Shared costs</h3>
-        <table id="costtable"><tr><th>Item</th><th>Paid by</th><th class="num">USD</th></tr></table>
-      </div>
-    </div>
   </div>
   <div class="sec">
     <h2>Ideas</h2>
@@ -337,8 +377,9 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 ================================================================ */
 const TRIP = {
   updated: "July 16, 2026",
+  fx: {NAD:0.0587, ZAR:0.0587}, /* → USD, approximate; overnight pass trues up */
   notesCutoff: "", /* notes created before this ISO timestamp are hidden (already folded into the itinerary) */
-  inboxCutoff: "2026-07-16T13:03:45.75338+00:00", /* booking uploads before this ISO timestamp have been processed */
+  inboxCutoff: "", /* booking uploads before this ISO timestamp have been processed */
   departISO: "2026-08-17T14:50:00-04:00",
   firstDay: "2026-08-17", lastDay: "2026-09-08",
 
@@ -375,7 +416,7 @@ const TRIP = {
     {from:"2026-09-01", to:"2026-09-06", name:"Cape Town — 5 nights", status:"gap",
      det:"4 guests, 5 nights. A house/apartment in City Bowl, Sea Point or the V&amp;A area beats four hotel rooms. Book soon — weekends fill."},
     {from:"2026-09-06", to:"2026-09-08", name:"Cape Town — extra nights", status:"todo",
-     det:"Ethan (7:50 PM) and Matt (11:15 PM) fly out Sep 7 — both need the Sep 6–7 night. Preston departs 7:30 PM Sep 6 — no extra night needed. Daniel’s return is not booked yet."},
+     det:"Ethan (7:50 PM) and Matt (11:15 PM) fly out Sep 7 — both need the Sep 6–7 night. Preston and Daniel depend on their returns — not booked yet."},
   ],
 
   cars: [
@@ -412,9 +453,7 @@ const TRIP = {
      det:"South African Airways · lands 7:55 PM · last check-in 5:20 PM · 2 checked bags each. Full last day in Windhoek, then ~30 min from O.R. Tambo to Sandton (Gautrain or Uber)."},
     {date:"2026-09-01", time:"9:25 AM", who:"", txt:"SA319 · Johannesburg → Cape Town — all four", status:"ok",
      det:"South African Airways · lands 11:40 AM · last check-in 8:45 AM — early start from Sandton (~40 min to O.R. Tambo)."},
-    {date:"2026-09-06", time:"7:30 PM", who:"P", txt:"Qatar Airways · Cape Town → Doha → New York JFK", status:"ok",
-     det:"CPT 7:30 PM → Doha 6:05 AM Sep 7 (9h35m) · 9h30m layover · Doha 3:35 PM → JFK 10:30 PM Sep 7 (13h55m). Check-in opens 24 h before departure."},
-    {date:"2026-09-06", time:"", who:"D", txt:"Daniel flies home", status:"gap",
+    {date:"2026-09-06", time:"", who:"", txt:"Preston / Daniel fly home", status:"gap",
      det:"Not booked. Target Sep 6–7. Via JNB, or from CPT: United to EWR (not daily), Delta CPT–ATL."},
     {date:"2026-09-07", time:"7:50 PM", who:"E", txt:"UA2222 · Cape Town → Newark", status:"ok",
      det:"United direct · lands 5:05 AM Sep 8. (No direct flight on Sep 6 — hence the extra day.)"},
@@ -471,8 +510,8 @@ const TRIP = {
     "2026-09-03":"Cape Town — plans open.",
     "2026-09-04":"Cape Town — plans open.",
     "2026-09-05":"Cape Town — plans open.",
-    "2026-09-06":"Last full day together — Preston flies home tonight via Doha; Daniel’s return still TBD.",
-    "2026-09-07":"Final Cape Town day — Ethan and Matt fly home tonight; Preston lands JFK 10:30 PM.",
+    "2026-09-06":"Last full day together; returns still TBD for Preston and Daniel.",
+    "2026-09-07":"Final Cape Town day — Ethan and Matt fly home tonight.",
     "2026-09-08":"Ethan lands Newark early; Matt lands Austin in the evening.",
   },
 
@@ -499,7 +538,7 @@ const TRIP = {
       {r:"ET835 · ADD → WDH · Aug 19", m:"8:35 AM → 1:20 PM · lands Windhoek"},
       {r:"SA77 · WDH → JNB · Aug 25", m:"6:10 PM → 7:55 PM"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
-      {r:"QR · CPT → DOH → JFK · Sep 6", m:"7:30 PM → 10:30 PM Sep 7 · 9h30m Doha layover"}]},
+      {r:"Return · ~Sep 6–7", m:"Needs booking", miss:true}]},
     {who:"D", role:"Domestic legs booked", legs:[
       {r:"SA74 / SA77 · JNB ↔ WDH", m:"Aug 19, 11:40 AM out · Aug 25, 6:10 PM back"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
@@ -524,7 +563,6 @@ const TRIP = {
   ],
 
   log: [
-    {d:"Jul 16", t:"Preston’s flight home booked — Qatar Airways, Cape Town → Doha → JFK, departing 7:30 PM Sep 6, landing 10:30 PM Sep 7."},
     {d:"Jul 16", t:"SAA flights booked: JNB→Windhoek Aug 19 (Ethan, Daniel, Matt) + Windhoek→JNB Aug 25 all four — now 6:10 PM, not 1:45. And JNB→Cape Town Sep 1, 9:25 AM, all four."},
     {d:"Jul 16", t:"Home page photo added — Sossusvlei oryx."},
     {d:"Jul 12", t:"Matt's flights booked — Austin → Joburg Aug 17 (Delta via ATL), Cape Town → Austin return Sep 7."},
@@ -780,16 +818,145 @@ $("#upbtn").addEventListener("click",async()=>{
 loadInbox();
 setInterval(loadInbox,60000);
 
+/* ================= MONEY — shared expense splitting ================= */
+const EX="https://gzacosjxjqadkpoohlwf.supabase.co/rest/v1/expenses";
+const NAMES=Object.values(TRIP.travelers).map(t=>t.name);
+const NCOLOR=Object.fromEntries(Object.values(TRIP.travelers).map(t=>[t.name,t.color]));
+let expenses=[];
+const toUSD=(amt,cur)=>cur==="USD"?+amt:+amt*(TRIP.fx[cur]||1);
+const fmt=v=>(v<0?"-":"")+"$"+Math.abs(+v).toFixed(2);
+
+/* seed legacy costs from TRIP.costs (shared, equal, not deletable) */
+const seedEx=TRIP.costs.map(c=>({title:c.item,amount:c.usd,paid_by:c.by,kind:"shared",split:null,seed:true}));
+
+$("#expayer").innerHTML=NAMES.map(n=>`<option>${n}</option>`).join("");
+$("#expayer").value=localStorage.getItem("afr26-me")||"Ethan";
+$("#exsplit").innerHTML=NAMES.map(n=>`<label class="splitin">${n}<input type="number" step="0.01" min="0" data-n="${n}" placeholder="0"></label>`).join("")
+  +`<span class="notice" id="exleft" style="align-self:flex-end;min-width:110px"></span>`;
+
+function syncMode(){
+  const shared=$("#exkind").value==="shared";
+  $("#exmode").style.display=shared?"":"none";
+  $("#exsplit").style.display=(shared&&$("#exmode").value==="custom")?"flex":"none";
+  updLeft();
+}
+function updLeft(){
+  if($("#exsplit").style.display==="none")return;
+  const total=parseFloat($("#examt").value)||0;
+  let sum=0;document.querySelectorAll("#exsplit input").forEach(i=>sum+=parseFloat(i.value)||0);
+  const left=total-sum;
+  $("#exleft").textContent="left to assign: "+left.toFixed(2);
+  $("#exleft").style.color=Math.abs(left)<0.01?"var(--ok)":"var(--bad)";
+}
+$("#exkind").addEventListener("change",syncMode);
+$("#exmode").addEventListener("change",syncMode);
+$("#examt").addEventListener("input",updLeft);
+document.querySelectorAll("#exsplit input").forEach(i=>i.addEventListener("input",updLeft));
+syncMode();
+
+async function loadExpenses(){
+  try{
+    const r=await fetch(EX+"?select=*&order=created_at.desc",{headers:SBH});
+    if(!r.ok)throw 0;
+    expenses=await r.json();
+  }catch(e){}
+  renderMoney();
+}
+function splitOf(e){
+  const total=+e.amount;
+  if(e.split)return e.split;
+  return Object.fromEntries(NAMES.map(n=>[n,total/NAMES.length]));
+}
+function renderMoney(){
+  const all=[...seedEx,...expenses];
+  const shared=all.filter(e=>e.kind!=="personal");
+  const personal=all.filter(e=>e.kind==="personal");
+  /* balances: +paid, −share */
+  const net=Object.fromEntries(NAMES.map(n=>[n,0]));
+  shared.forEach(e=>{
+    net[e.paid_by]=(net[e.paid_by]||0)+ +e.amount;
+    const sh=splitOf(e);
+    NAMES.forEach(n=>net[n]-=(+sh[n]||0));
+  });
+  $("#balances").innerHTML=NAMES.map(n=>{
+    const v=net[n];
+    const lbl=v>0.01?"gets back":v<-0.01?"owes":"settled";
+    const col=v>0.01?"var(--ok)":v<-0.01?"var(--bad)":"var(--dim)";
+    return `<div class="bal" style="--c:${NCOLOR[n]}"><div class="nm">${n}</div><div class="amt" style="color:${col}">${fmt(Math.abs(v))}</div><div class="lbl">${lbl}</div></div>`;
+  }).join("");
+  /* simplify debts: fewest payments */
+  const deb=NAMES.filter(n=>net[n]<-0.01).map(n=>({n,v:-net[n]})).sort((a,b)=>b.v-a.v);
+  const cred=NAMES.filter(n=>net[n]>0.01).map(n=>({n,v:net[n]})).sort((a,b)=>b.v-a.v);
+  const pays=[];let i=0,j=0;
+  while(i<deb.length&&j<cred.length){
+    const x=Math.min(deb[i].v,cred[j].v);
+    pays.push(`<div class="settle-line"><b>${deb[i].n}</b> pays <b>${cred[j].n}</b> <b style="color:var(--espresso)">${fmt(x)}</b></div>`);
+    deb[i].v-=x;cred[j].v-=x;
+    if(deb[i].v<0.01)i++;if(cred[j].v<0.01)j++;
+  }
+  $("#settle").innerHTML=pays.join("")||`<span class="notice">All square.</span>`;
+  /* shared list */
+  $("#exlist").innerHTML=shared.map(e=>{
+    const sh=splitOf(e);
+    const desc=e.split?NAMES.filter(n=>+sh[n]>0).map(n=>`${n} ${fmt(sh[n])}`).join(" · "):"split 4 ways";
+    const orig=e.currency&&e.currency!=="USD"?` <span class="meta">(${e.currency==="NAD"?"N$":"R"}${(+e.orig_amount).toFixed(2)})</span>`:"";
+    return `<div class="exrow"><b>${esc(e.title)}</b><span>${esc(e.paid_by)} paid ${fmt(e.amount)}${orig}</span><span class="meta">${desc}</span>
+      ${e.receipt_url?`<a href="${e.receipt_url}" target="_blank" rel="noopener">receipt</a>`:""}
+      ${e.seed?"":`<button class="del" data-id="${e.id}" title="delete">✕</button>`}</div>`;
+  }).join("")||`<span class="notice">Nothing yet.</span>`;
+  /* personal list, grouped */
+  $("#perlist").innerHTML=NAMES.map(n=>{
+    const rows=personal.filter(e=>e.paid_by===n);
+    if(!rows.length)return "";
+    const tot=rows.reduce((a,e)=>a+ +e.amount,0);
+    return `<div class="exrow"><b style="color:${NCOLOR[n]}">${n}</b><span>${fmt(tot)} total</span><span class="meta">${rows.map(e=>esc(e.title)+" "+fmt(e.amount)).join(" · ")}</span></div>`;
+  }).join("")||`<span class="notice">Nothing yet.</span>`;
+  document.querySelectorAll("#exlist .del").forEach(b=>b.addEventListener("click",async()=>{
+    await fetch(EX+"?id=eq."+b.dataset.id,{method:"DELETE",headers:SBH}).catch(()=>{});
+    loadExpenses();
+  }));
+}
+$("#exbtn").addEventListener("click",async()=>{
+  const st=$("#exstatus");
+  const title=$("#extitle").value.trim(), raw=parseFloat($("#examt").value), cur=$("#excur").value;
+  if(!title||!(raw>0)){st.textContent="Need a name and an amount.";return;}
+  const usd=+toUSD(raw,cur).toFixed(2);
+  let split=null;
+  if($("#exkind").value==="shared"&&$("#exmode").value==="custom"){
+    let sum=0;split={};
+    document.querySelectorAll("#exsplit input").forEach(i=>{const v=parseFloat(i.value)||0;split[i.dataset.n]=+toUSD(v,cur).toFixed(2);sum+=v;});
+    if(Math.abs(sum-raw)>0.05){st.textContent="Custom amounts must add up to the total.";return;}
+  }
+  st.textContent="Saving…";
+  let receipt_url=null;
+  const f=$("#exfile").files[0];
+  try{
+    if(f){
+      if(f.size>15e6){st.textContent="Receipt too big — under 15 MB please.";return;}
+      const path=Date.now()+"-"+f.name.replace(/[^a-zA-Z0-9._-]/g,"");
+      const r=await fetch(`${STO}/object/receipts/${path}`,{method:"POST",
+        headers:{apikey:SBK,Authorization:"Bearer "+SBK,"Content-Type":f.type||"application/octet-stream"},body:f});
+      if(!r.ok)throw 0;
+      receipt_url=`${STO}/object/public/receipts/${path}`;
+    }
+    await fetch(EX,{method:"POST",headers:SBH,body:JSON.stringify({
+      title,amount:usd,currency:cur,orig_amount:cur==="USD"?null:raw,
+      paid_by:$("#expayer").value,kind:$("#exkind").value,split,receipt_url})});
+    $("#extitle").value="";$("#examt").value="";$("#exfile").value="";
+    document.querySelectorAll("#exsplit input").forEach(i=>i.value="");
+    st.textContent="Added ✓";setTimeout(()=>st.textContent="",2500);
+    loadExpenses();
+  }catch(e){st.textContent="Save failed — try again.";}
+});
+loadExpenses();
+setInterval(loadExpenses,30000);
+
 /* ================= INFO ================= */
 $("#crewgrid").innerHTML=TRIP.crew.map(c=>{
   const tv=TRIP.travelers[c.who];
   return `<div class="crew" style="--c:${tv.color}"><div class="nm"><i></i>${tv.name}</div><div class="role">${c.role}</div>
   ${c.legs.map(l=>`<div class="leg${l.miss?" miss":""}"><div class="r">${l.r}</div><div class="m">${l.m}</div></div>`).join("")}</div>`;
 }).join("");
-const totalUsd=TRIP.costs.reduce((a,c)=>a+c.usd,0);
-$("#costtable").insertAdjacentHTML("beforeend",TRIP.costs.map(c=>`<tr><td>${c.item}</td><td>${c.by}</td><td class="num">$${c.usd.toFixed(2)}</td></tr>`).join(""));
-$("#owe").textContent="$"+(totalUsd/4).toFixed(2)+" each";
-$("#owesub").textContent="owed to Ethan (Preston · Daniel · Matt) — total shared spend $"+totalUsd.toFixed(2);
 $("#bento").innerHTML=TRIP.ideas.map(i=>`<div class="idea"><div class="tag">${i.tag}</div><h3>${i.h}</h3><p>${i.p}</p></div>`).join("");
 $("#loglist").innerHTML=TRIP.log.map(l=>`<li><span class="d">${l.d}</span><span class="t">${l.t}</span></li>`).join("");
 $("#updated").textContent="Last updated "+TRIP.updated;
