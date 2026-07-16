@@ -338,7 +338,7 @@ button,.lane-row,.cd,.mission,.tabbtn{touch-action:manipulation}
 const TRIP = {
   updated: "July 16, 2026",
   notesCutoff: "", /* notes created before this ISO timestamp are hidden (already folded into the itinerary) */
-  inboxCutoff: "", /* booking uploads before this ISO timestamp have been processed */
+  inboxCutoff: "2026-07-16T13:03:45.75338+00:00", /* booking uploads before this ISO timestamp have been processed */
   departISO: "2026-08-17T14:50:00-04:00",
   firstDay: "2026-08-17", lastDay: "2026-09-08",
 
@@ -375,7 +375,7 @@ const TRIP = {
     {from:"2026-09-01", to:"2026-09-06", name:"Cape Town — 5 nights", status:"gap",
      det:"4 guests, 5 nights. A house/apartment in City Bowl, Sea Point or the V&amp;A area beats four hotel rooms. Book soon — weekends fill."},
     {from:"2026-09-06", to:"2026-09-08", name:"Cape Town — extra nights", status:"todo",
-     det:"Ethan (7:50 PM) and Matt (11:15 PM) fly out Sep 7 — both need the Sep 6–7 night. Preston and Daniel depend on their returns — not booked yet."},
+     det:"Ethan (7:50 PM) and Matt (11:15 PM) fly out Sep 7 — both need the Sep 6–7 night. Preston departs 7:30 PM Sep 6 — no extra night needed. Daniel’s return is not booked yet."},
   ],
 
   cars: [
@@ -412,7 +412,9 @@ const TRIP = {
      det:"South African Airways · lands 7:55 PM · last check-in 5:20 PM · 2 checked bags each. Full last day in Windhoek, then ~30 min from O.R. Tambo to Sandton (Gautrain or Uber)."},
     {date:"2026-09-01", time:"9:25 AM", who:"", txt:"SA319 · Johannesburg → Cape Town — all four", status:"ok",
      det:"South African Airways · lands 11:40 AM · last check-in 8:45 AM — early start from Sandton (~40 min to O.R. Tambo)."},
-    {date:"2026-09-06", time:"", who:"", txt:"Preston / Daniel fly home", status:"gap",
+    {date:"2026-09-06", time:"7:30 PM", who:"P", txt:"Qatar Airways · Cape Town → Doha → New York JFK", status:"ok",
+     det:"CPT 7:30 PM → Doha 6:05 AM Sep 7 (9h35m) · 9h30m layover · Doha 3:35 PM → JFK 10:30 PM Sep 7 (13h55m). Check-in opens 24 h before departure."},
+    {date:"2026-09-06", time:"", who:"D", txt:"Daniel flies home", status:"gap",
      det:"Not booked. Target Sep 6–7. Via JNB, or from CPT: United to EWR (not daily), Delta CPT–ATL."},
     {date:"2026-09-07", time:"7:50 PM", who:"E", txt:"UA2222 · Cape Town → Newark", status:"ok",
      det:"United direct · lands 5:05 AM Sep 8. (No direct flight on Sep 6 — hence the extra day.)"},
@@ -469,8 +471,8 @@ const TRIP = {
     "2026-09-03":"Cape Town — plans open.",
     "2026-09-04":"Cape Town — plans open.",
     "2026-09-05":"Cape Town — plans open.",
-    "2026-09-06":"Last full day together; returns still TBD for Preston and Daniel.",
-    "2026-09-07":"Final Cape Town day — Ethan and Matt fly home tonight.",
+    "2026-09-06":"Last full day together — Preston flies home tonight via Doha; Daniel’s return still TBD.",
+    "2026-09-07":"Final Cape Town day — Ethan and Matt fly home tonight; Preston lands JFK 10:30 PM.",
     "2026-09-08":"Ethan lands Newark early; Matt lands Austin in the evening.",
   },
 
@@ -497,7 +499,7 @@ const TRIP = {
       {r:"ET835 · ADD → WDH · Aug 19", m:"8:35 AM → 1:20 PM · lands Windhoek"},
       {r:"SA77 · WDH → JNB · Aug 25", m:"6:10 PM → 7:55 PM"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
-      {r:"Return · ~Sep 6–7", m:"Needs booking", miss:true}]},
+      {r:"QR · CPT → DOH → JFK · Sep 6", m:"7:30 PM → 10:30 PM Sep 7 · 9h30m Doha layover"}]},
     {who:"D", role:"Domestic legs booked", legs:[
       {r:"SA74 / SA77 · JNB ↔ WDH", m:"Aug 19, 11:40 AM out · Aug 25, 6:10 PM back"},
       {r:"SA319 · JNB → CPT · Sep 1", m:"9:25 AM → 11:40 AM"},
@@ -522,6 +524,7 @@ const TRIP = {
   ],
 
   log: [
+    {d:"Jul 16", t:"Preston’s flight home booked — Qatar Airways, Cape Town → Doha → JFK, departing 7:30 PM Sep 6, landing 10:30 PM Sep 7."},
     {d:"Jul 16", t:"SAA flights booked: JNB→Windhoek Aug 19 (Ethan, Daniel, Matt) + Windhoek→JNB Aug 25 all four — now 6:10 PM, not 1:45. And JNB→Cape Town Sep 1, 9:25 AM, all four."},
     {d:"Jul 16", t:"Home page photo added — Sossusvlei oryx."},
     {d:"Jul 12", t:"Matt's flights booked — Austin → Joburg Aug 17 (Delta via ATL), Cape Town → Austin return Sep 7."},
