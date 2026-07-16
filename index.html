@@ -67,10 +67,6 @@ h1 em{font-style:italic}
 .phase-head .dates{color:var(--dim);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
 .phase-img{width:100%;height:200px;object-fit:cover;border-radius:var(--r);margin:0 0 12px;display:block;border:1px solid var(--line);box-shadow:var(--shadow)}
 @media(min-width:700px){.phase-img{height:260px}}
-/* two snap points only: hero and the calendar; days scroll free */
-html{scroll-snap-type:y proximity}
-header{scroll-snap-align:start}
-main{scroll-snap-align:start;scroll-margin-top:58px}
 .day{scroll-margin-top:74px}
 /* vertical location rail */
 .day{display:flex}
@@ -636,14 +632,9 @@ buildCalendar();
 function gotoDay(ds){
   const el=document.getElementById("day-"+ds);
   if(!el)return;
-  /* snap fights programmatic smooth scroll on iOS — pause it while we travel */
-  const de=document.documentElement;
-  de.style.scrollSnapType="none";
   el.scrollIntoView({behavior:"smooth",block:"start"});
   el.classList.add("flash");
   setTimeout(()=>el.classList.remove("flash"),1800);
-  clearTimeout(gotoDay._t);
-  gotoDay._t=setTimeout(()=>{de.style.scrollSnapType=""},1400);
 }
 
 /* ================= TODO ================= */
