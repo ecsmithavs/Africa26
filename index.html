@@ -1013,19 +1013,6 @@ document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
   if(window.scrollY>hh)window.scrollTo({top:hh});
 }));
 if(location.hash){const b=document.querySelector(`.tabbtn[data-v="${location.hash.slice(1)}"]`);if(b)b.click();}
-
-/* gentle settle between the landing photo and the calendar only — days scroll free */
-(function(){
-  let t;
-  window.addEventListener("scroll",()=>{
-    clearTimeout(t);
-    t=setTimeout(()=>{
-      const hh=document.querySelector("header").offsetHeight;
-      const y=window.scrollY;
-      if(y>60&&y<hh-60)window.scrollTo({top:y<hh/2?0:hh,behavior:"smooth"});
-    },160);
-  },{passive:true});
-})();
 </script>
 </body>
 </html>
